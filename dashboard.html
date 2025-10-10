@@ -25,10 +25,11 @@
         <img src="images/kana writing.png" alt="writing">
         <span>Kana Character Writing</span>
       </div>
-      <div class="menu-item">
-        <img src="images/comics.png" alt="media">
-        <span>Media</span>
-      </div>
+<a href="media.html" class="menu-item">
+  <img src="images/comics.png" alt="Media">
+  <span>Manga</span>
+</a>
+
       <div class="menu-item">
         <img src="images/dictionary.png" alt="dict">
         <span>Japanese Dictionary</span>
@@ -109,6 +110,38 @@
     </div>
   </main>
 
-  <script src="script.js"></script>
+<script>
+  // Redirect to login if not logged in
+  if (!localStorage.getItem('loggedInUser') && !sessionStorage.getItem('loggedInUser')) {
+    window.location.href = 'login.html';
+  }
+
+  // Wire the exit icon (topbar) to log out — finds an image with alt="exit"
+  (function() {
+    const exitImg = document.querySelector('.topbar img[alt="exit"]');
+    if (!exitImg) return;
+    exitImg.addEventListener('click', () => {
+      if (!confirm('Log out and return to login?')) return;
+      localStorage.removeItem('loggedInUser');
+      sessionStorage.removeItem('loggedInUser');
+      // optionally also clear registeredUser (commented out)
+      // localStorage.removeItem('registeredUser');
+      window.location.href = 'login.html';
+    });
+  })();
+</script>
+
+<script>
+  // Redirect to settings when clicking the gear icon
+  (function() {
+    const settingsImg = document.querySelector('.topbar img[alt="gear"]');
+    if (!settingsImg) return;
+    settingsImg.addEventListener('click', () => {
+      window.location.href = 'settings.html';
+    });
+  })();
+</script>
+
+
 </body>
 </html>

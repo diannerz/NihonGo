@@ -210,9 +210,11 @@ html, body {
 </div>
 
 <script>
-const hiraPages = [
+
+  const hiraPages = [
   [
     ["", "~a", "~i", "~u", "~e", "~o"],
+    ["", ["あ", "a"], ["い", "i"], ["う", "u"], ["え", "e"], ["お", "o"]],
     ["k~", ["か","ka"], ["き","ki"], ["く","ku"], ["け","ke"], ["こ","ko"]],
     ["s~", ["さ","sa"], ["し","shi"], ["す","su"], ["せ","se"], ["そ","so"]],
     ["t~", ["た","ta"], ["ち","chi"], ["つ","tsu"], ["て","te"], ["と","to"]],
@@ -232,6 +234,7 @@ const hiraPages = [
 const kataPages = [
   [
     ["", "~a", "~i", "~u", "~e", "~o"],
+    ["", ["ア", "a"], ["イ", "i"], ["ウ", "u"], ["エ", "e"], ["オ", "o"]],
     ["k~", ["カ","ka"], ["キ","ki"], ["ク","ku"], ["ケ","ke"], ["コ","ko"]],
     ["s~", ["サ","sa"], ["シ","shi"], ["ス","su"], ["セ","se"], ["ソ","so"]],
     ["t~", ["タ","ta"], ["チ","chi"], ["ツ","tsu"], ["テ","te"], ["ト","to"]],
@@ -247,6 +250,8 @@ const kataPages = [
     ["", ["ン","n"], ["",""], ["",""], ["",""], ["",""]],
   ]
 ];
+
+
 
 let mode = "hiragana";
 let pageIndex = 0;
@@ -274,14 +279,22 @@ function render() {
         div.className = "cell";
         const [kana, romaji] = col;
         if (kana) {
-          const big = document.createElement("div");
-          big.className = "big";
-          big.textContent = kana;
-          const small = document.createElement("div");
-          small.className = "small";
-          small.textContent = romaji;
-          div.append(big, small);
-        }
+  const big = document.createElement("div");
+  big.className = "big";
+  big.textContent = kana;
+
+  // 🔗 Make kana clickable → goes to flashcard
+  big.style.cursor = "pointer";
+  big.addEventListener("click", () => {
+    window.location.href = `kana-flashcards.html?kana=${encodeURIComponent(kana)}`;
+  });
+
+  const small = document.createElement("div");
+  small.className = "small";
+  small.textContent = romaji;
+  div.append(big, small);
+}
+
       }
       chartGrid.appendChild(div);
     });

@@ -1,34 +1,96 @@
-// script.js
+// script.js (overwrite)
 document.addEventListener('DOMContentLoaded', () => {
-  const tracks = document.querySelectorAll('.progress-track');
 
-  tracks.forEach(track => {
-    const target = parseFloat(track.getAttribute('data-target') || '0'); // percent target
+  /* -------------------------
+     Progress tracker (unchanged)
+     ------------------------- */
+  const tracks = document.querySelectorAll('.progress-track');
+  tracks.forEach((track, i) => {
+    const target = parseFloat(track.getAttribute('data-target') || '0');
     const fill = track.querySelector('.progress-inner-fill');
     const percentEl = track.parentElement.querySelector('.progress-percent');
-
-    // small fade-in delay based on index for staggered animation
-    const delay = Array.from(tracks).indexOf(track) * 150;
-
-    // animate width using requestAnimationFrame for smoothness:
+    const delay = i * 150;
+    if (!fill || !percentEl) return;
     setTimeout(() => {
-      // update CSS width (transition in CSS handles animation)
       fill.style.width = target + '%';
-
-      // animate numeric counter (0 -> target)
-      let current = 0;
-      const duration = 900; // ms
+      const duration = 900;
       const start = performance.now();
       const step = (now) => {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = progress; // linear - could add easing
-        const value = Math.round(eased * target);
-        percentEl.textContent = value + '%';
+        const progress = Math.min((now - start) / duration, 1);
+        percentEl.textContent = Math.round(progress * target) + '%';
         if (progress < 1) requestAnimationFrame(step);
-        else percentEl.textContent = target + '%';
       };
       requestAnimationFrame(step);
     }, delay + 120);
   });
+
+
+  /* -------------------------
+     Manga slider + story text
+     ------------------------- */
+  // limit scope to manga page
+  const root = document.querySelector('.manga-page');
+  if (!root) return;
+
+  const slides = Array.from(root.querySelectorAll('.slides img'));
+  const prevBtn = root.querySelector('.slide-btn.prev');
+  const nextBtn = root.querySelector('.slide-btn.next');
+  const enText = root.querySelector('.story-text .en');
+  const jpText = root.querySelector('.story-text .jp');
+  const romajiText = root.querySelector('.story-text .romaji');
+  const dotsContainer = root.querySelector('.progress-dots');
+
+  if (!slides.length || !prevBtn || !nextBtn || !enText || !jpText || !romajiText) {
+    // nothing to do on other pages
+    return;
+  }
+
+  const story = [
+    { en: "One day, an egg had fallen.", jp: "あるひ、たまごがおちていました。", romaji: "Aru hi, tamago ga ochite imashita" },
+    { en: "What kind of egg is it?", jp: "なんのたまごだろう？", romaji: "Nan no tamago darou?" },
+    { en: "Ah! It looks like something is hatching!", jp: "なにかがうまれそうだ！", romaji: "Nani ka ga umare-sou da!" },
+    { en: "Ahh! Something came out!", jp: "うわ！でてきた！", romaji: "Uwa! dete kita!" },
+    { en: "What kind of living creature is this?", jp: "これはなんのいきものだろう？", romaji: "Kore wa nan no ikimono darou?" },
+    { en: "The little creature looked around curiously.", jp: "ちいさないきものはきょろきょろとまわりをみました。", romaji: "Chiisana ikimono wa kyoro kyoro to mawari o mimashita." }
+  ];
+
+  // make dots UI (● ○ ○)
+  function renderDots(activeIndex) {
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < slides.length; i++) {
+      const dot = document.createElement('span');
+      dot.textContent = i === activeIndex ? '●' : '○';
+      dot.style.margin = '0 6px';
+      dot.style.color = 'rgba(255,255,255,0.9)';
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  let current = 0;
+
+  function updateSlide(i) {
+    i = Math.max(0, Math.min(i, slides.length - 1));
+    current = i;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    // story text: guard against story length mismatch
+    const sdata = story[i] || story[story.length - 1];
+    enText.textContent = `“${sdata.en}”`;
+    jpText.textContent = sdata.jp;
+    romajiText.textContent = sdata.romaji;
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === slides.length - 1;
+    prevBtn.style.opacity = prevBtn.disabled ? 0.35 : 1;
+    nextBtn.style.opacity = nextBtn.disabled ? 0.35 : 1;
+    renderDots(i);
+  }
+
+  prevBtn.addEventListener('click', () => updateSlide(current - 1));
+  nextBtn.addEventListener('click', () => updateSlide(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') prevBtn.click();
+    if (e.key === 'ArrowRight') nextBtn.click();
+  });
+
+  updateSlide(0);
 });

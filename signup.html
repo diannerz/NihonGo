@@ -188,61 +188,60 @@
     </div>
   </div>
 
-  <script>
-    const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const createBtn = document.getElementById('createBtn');
-    const errorMessage = document.getElementById('errorMessage');
+<script>
+  const usernameInput = document.getElementById('username');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const createBtn = document.getElementById('createBtn');
+  const errorMessage = document.getElementById('errorMessage');
 
-    function validateForm() {
-      const username = usernameInput.value.trim();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+  function validateForm() {
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-      // Check if all fields are filled
-      const allFilled = username.length > 0 && email.length > 0 && password.length > 0;
+    const allFilled = username && email && password;
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const passwordValid = password.length >= 6 && /[a-zA-Z]/.test(password) && /\d/.test(password);
 
-      // Validate email format
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-      // Validate password (minimum 6 characters, at least one letter and one number)
-      const passwordValid = password.length >= 6 && /[a-zA-Z]/.test(password) && /\d/.test(password);
-
-      // Enable button only if all validations pass
-      if (allFilled && emailValid && passwordValid) {
-        createBtn.disabled = false;
-        errorMessage.classList.remove('show');
-      } else {
-        createBtn.disabled = true;
-      }
+    if (allFilled && emailValid && passwordValid) {
+      createBtn.disabled = false;
+      errorMessage.classList.remove('show');
+    } else {
+      createBtn.disabled = true;
     }
+  }
 
-    // Add event listeners to all inputs
-    usernameInput.addEventListener('input', validateForm);
-    emailInput.addEventListener('input', validateForm);
-    passwordInput.addEventListener('input', validateForm);
+  usernameInput.addEventListener('input', validateForm);
+  emailInput.addEventListener('input', validateForm);
+  passwordInput.addEventListener('input', validateForm);
 
-    // Handle button click
-    createBtn.addEventListener('click', function(e) {
-      e.preventDefault();
+  createBtn.addEventListener('click', function(e) {
+    e.preventDefault();
 
-      const username = usernameInput.value.trim();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-      // Final validation before submission
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      const passwordValid = password.length >= 6 && /[a-zA-Z]/.test(password) && /\d/.test(password);
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const passwordValid = password.length >= 6 && /[a-zA-Z]/.test(password) && /\d/.test(password);
 
-      if (username && email && emailValid && password && passwordValid) {
-        // All validations passed, redirect to dashboard
-        window.location.href = 'dashboard.html';
-      } else {
-        // Show error message
-        errorMessage.classList.add('show');
-      }
-    });
-  </script>
+    if (username && email && emailValid && password && passwordValid) {
+      // ✅ Save user data so login can read it
+      const user = { username, email, password };
+      localStorage.setItem('registeredUser', JSON.stringify(user));
+
+      // Optional: log them in automatically
+      localStorage.setItem('loggedInUser', username);
+      sessionStorage.setItem('loggedInUser', username);
+
+      // Redirect
+      window.location.href = 'dashboard.html';
+    } else {
+      errorMessage.classList.add('show');
+    }
+  });
+</script>
+
 </body>
 </html>
