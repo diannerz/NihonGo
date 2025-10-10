@@ -1,0 +1,339 @@
+:root{
+  --sidebar-w:220px;
+  --sidebar-bg:#244e53;
+  --main-bg:#dffbf7;
+  --panel-bg:#8ea6ab;
+  --panel-inner:#91a3ad;
+  --challenge-bg:#0f6670;
+  --accent-mint:#e7fbf7;
+  --text-main:#244850;
+  --white:#ffffff;
+  --shadow-strong: rgba(0,0,0,0.14);
+  --shadow-soft: rgba(0,0,0,0.06);
+}
+
+/* reset & base */
+*{ box-sizing: border-box; }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* remove page-level scrollbars */
+}
+body {
+  font-family: "Yu Gothic", "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--main-bg);
+  color: var(--text-main);
+  display: flex;
+  height: 100vh;
+}
+
+/* ---------------- SIDEBAR ---------------- */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 12px;
+  gap: 18px;
+  flex-shrink: 0;
+  height: 100vh;
+  position: fixed; /* fixed so main content flows beside it */
+  top: 0;
+  left: 0;
+  overflow: hidden; /* hide any scrollbars */
+}
+
+/* logo at top */
+.sidebar .logo {
+  width: 130px;
+  height: auto;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* menu container */
+.side-menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  /* distribute menu items so they fit evenly */
+  justify-content: center;
+  height: calc(100vh - 56px); /* leave small breathing room from top padding */
+}
+
+
+/* each menu item */
+.menu-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px;
+  cursor: pointer;
+  transition: transform .12s ease, opacity .12s ease;
+}
+
+/* hover feel */
+.menu-item:hover { transform: translateY(-3px); opacity: .98; }
+
+/* larger icons */
+.menu-item img{
+  width: 76px;   /* big, but safe so all items fit */
+  height: auto;
+  display: block;
+  object-fit: contain;
+  -webkit-user-drag: none;
+  user-select: none;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.06));
+}
+
+/* larger labels */
+.menu-item span{
+  font-weight:800;
+  font-size:14px;
+  line-height:1.05;
+  letter-spacing:0.6px;
+  color:var(--white);
+  text-align:center;
+  white-space:nowrap;
+  padding:0 6px;
+}
+
+/* allow specific labels to wrap if needed: add class "wrap" to the span in HTML */
+.menu-item span.wrap{
+  white-space:normal;
+  word-break:break-word;
+}
+
+/* ---------------- MAIN AREA ---------------- */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin-left: var(--sidebar-w); /* make room for fixed sidebar */
+  overflow: hidden; /* no outer scrollbars */
+}
+
+/* topbar (keeps previous sizes but larger icons as asked) */
+.topbar {
+  height: 72px;
+  background: #7aa5a8;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  padding: 10px 40px 10px 20px;
+  flex-shrink: 0;
+}
+.topbar img{
+  width: 76px;   /* large topbar icons but fits the topbar */
+  height: auto;
+  cursor: pointer;
+  margin-right: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+}
+
+/* content area */
+.content {
+  padding: 28px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow-y: auto; /* allow internal scrolling only if needed */
+  flex: 1;
+}
+/* ---------------- DAILY CHALLENGES ---------------- */
+.challenges-panel{
+  background:var(--panel-bg);
+  border-radius:48px;
+  padding:36px 42px;
+  display:flex;
+  align-items:center;
+  gap:36px;
+  box-shadow: 0 12px 30px var(--shadow-soft);
+}
+.onigiri{ flex:0 0 360px; display:flex; align-items:center; justify-content:center; }
+.onigiri img{ width:320px; max-width:100%; display:block; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.08)); }
+
+/* header typography */
+.ch-right{ flex:1; display:flex; flex-direction:column; gap:18px; }
+.ch-title{
+  font-size:52px;
+  color:var(--white);
+  margin:0 0 8px 0;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+/* challenge rows */
+.challenge-list{ display:flex; flex-direction:column; gap:14px; }
+.challenge-row{
+  display:flex; align-items:center; gap:18px;
+  background:var(--challenge-bg);
+  padding:14px 18px;
+  border-radius:14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08), inset 0 2px 0 rgba(255,255,255,0.06);
+  transition: transform .18s ease;
+}
+.challenge-row:hover{ transform: translateY(-3px); }
+
+.challenge-label{
+  color:var(--white);
+  font-weight:800;
+  font-size:18px;
+  min-width:380px;
+  letter-spacing:0.8px;
+}
+
+/* progress area */
+.progress-area{ margin-left:auto; display:flex; align-items:center; gap:12px; }
+
+/* progress track */
+.progress-track{
+  width:210px; height:34px;
+  background:var(--white);
+  border-radius:20px;
+  padding:4px;
+  display:flex; align-items:center; justify-content:flex-start;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08), inset 0 2px 0 rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.progress-inner-fill{
+  height:100%; width:0%;
+  background: linear-gradient(90deg,var(--panel-bg), #7fa1a6);
+  border-radius:16px;
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.12), 0 2px 6px rgba(0,0,0,0.06);
+  transition: width 1.2s cubic-bezier(.2,.9,.2,1);
+}
+.progress-percent{
+  font-weight:900;
+  color:var(--white);
+  margin-left:6px;
+  min-width:42px;
+  text-align:right;
+  font-size:16px;
+  letter-spacing:0.8px;
+}
+
+/* ---------------- MY PROGRESS BAND ---------------- */
+.myprogress-title{
+  font-size:56px;
+  color:var(--text-main);
+  font-weight:900;
+  margin:12px 0 18px 0;
+  letter-spacing:3px;
+  text-shadow: 3px 4px 0 rgba(0,0,0,0.06);
+}
+
+.progress-band{
+  background:var(--panel-inner);
+  border-radius:58px;
+  padding:30px 28px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+}
+
+.progress-inner{
+  width:96%;
+  margin:0 auto;
+  display:flex;
+  border-radius:46px;
+  overflow:visible;
+  border: 3px solid rgba(0,0,0,0.06);
+  min-height:220px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.01));
+}
+
+.col{
+  flex:1;
+  padding:34px 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  min-height:160px;
+}
+.progress-inner > .col + .col{
+  box-shadow: inset 1px 0 0 rgba(0,0,0,0.06);
+}
+
+.col .pill{
+  position:absolute;
+  top:-30px;
+  background:var(--accent-mint);
+  color:var(--text-main);
+  font-weight:900;
+  padding:12px 28px;
+  border-radius:30px;
+  font-size:22px;
+  box-shadow:0 6px 0 rgba(0,0,0,0.06);
+  letter-spacing:6px;
+}
+
+.big-count{
+  font-size:88px;
+  color:#ffffff;
+  font-weight:900;
+  letter-spacing:1px;
+  margin:6px 0 8px 0;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.06);
+}
+
+.percent{
+  font-size:28px;
+  color:var(--text-main);
+  font-weight:900;
+  margin-top:8px;
+}
+
+/* ---------------- responsive tweaks ---------------- */
+@media (max-width:1100px){
+  .content{padding:20px}
+  .onigiri{flex-basis:240px}
+  .onigiri img{width:220px}
+  .ch-title{font-size:36px}
+  .myprogress-title{font-size:36px}
+  .big-count{font-size:48px}
+  .challenge-label{min-width:220px}
+  :root{--sidebar-w:220px}
+  .sidebar{ width:var(--sidebar-w); min-width:var(--sidebar-w); padding:18px 8px; }
+  .menu-item img{ width:56px; }
+  .topbar img{ width:48px; }
+  .col .pill{ font-size:16px; letter-spacing:3px; padding:8px 18px; top:-22px; }
+  .progress-inner{ min-height:140px; }
+}
+/* KANA PAGE RESET */
+.kana-page, .kana-page body {
+  display: block !important;
+  overflow: auto !important;
+  height: auto !important;
+}
+.consonant-list {
+  grid-auto-rows: minmax(80px, 1fr);
+  align-items: stretch;
+}
+
+.chart-grid {
+  align-items: start;
+}
+
+.consonant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: rgba(255,255,255,0.95);
+  font-size: 20px;
+  transform: translateY(-10px); /* ⬅ move consonants upward slightly */
+}

@@ -3,104 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up</title>
+  <title>Sign Up - NihonGo</title>
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
-      font-family: Yu Gothic;
     }
 
     body {
-      margin: 0;
-      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Yu Gothic', sans-serif;
       display: flex;
+      height: 100vh;
     }
 
     /* Left Side */
     .left {
       flex: 1;
-      background-color: #7d9ca4; /* light blue-gray */
+      background-color: #91a3ad;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 40px;
-      color: #fff;
+      padding: 60px 40px;
+      color: white;
     }
 
     .left h1 {
-      font-size: 70px;
-      margin-bottom: 40px;
+      font-size: 80px;
+      font-weight: 300;
+      margin-bottom: 50px;
+      letter-spacing: 2px;
     }
 
     .left h1 span {
-      color: #f48c8c; /* pink "Up" */
+      color: #ff9999;
+      font-weight: 400;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 320px;
     }
 
     .input-group {
-      width: 100%;
-      max-width: 300px;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
     }
 
     .input-group label {
-      font-size: 14px;
       display: block;
-      margin-bottom: 5px;
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: white;
     }
 
     .input-group input {
       width: 100%;
-      padding: 10px;
-      border-radius: 4px;
+      padding: 12px 14px;
       border: none;
-      font-size: 14px;
+      border-radius: 6px;
+      font-size: 15px;
+      background-color: #f5f5f5;
+      color: #333;
+      font-family: inherit;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(255, 153, 153, 0.2);
+    }
+
+    .input-group input::placeholder {
+      color: #999;
     }
 
     .note {
-      font-size: 12px;
-      max-width: 300px;
-      margin-top: -10px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.6;
+      margin-top: 5px;
+      font-weight: 400;
     }
 
     /* Right Side */
     .right {
       flex: 1;
-      background-color: #285963; /* teal background */
+      background: linear-gradient(135deg, #2b5a68 0%, #1f4a56 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      color: white;
-      text-align: center;
+      padding: 40px;
     }
 
     .logo-box {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 30px;
     }
 
     .logo-box img {
-      max-width: 350px;
+      width: 280px;
       height: auto;
-      margin-bottom: 15px; /* tighter spacing */
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
     }
 
     .logo-box button {
-      background-color: #467d89;
+      background-color: #4f6d75;
       border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
-      font-size: 16px;
+      padding: 14px 32px;
+      border-radius: 6px;
+      font-size: 18px;
       color: white;
-      font-weight: bold;
+      font-weight: 500;
       cursor: pointer;
       text-decoration: underline;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
+      transition: all 0.3s ease;
     }
 
-    .logo-box button:hover {
-      background-color: #3c6b75;
+    .logo-box button:hover:not(:disabled) {
+      background-color: #5f7d85;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-box button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .logo-box button:disabled {
+      background-color: #3f5d65;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .error-message {
+      display: none;
+      color: #ffcccc;
+      font-size: 13px;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .error-message.show {
+      display: block;
     }
   </style>
 </head>
@@ -109,37 +159,90 @@
   <div class="left">
     <h1>Sign <span>Up</span></h1>
 
-    <div class="input-group">
-      <label>Username</label>
-      <input type="text" placeholder="">
-    </div>
+    <form class="form-container" id="signupForm">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
 
-    <div class="input-group">
-      <label>Email</label>
-      <input type="email" placeholder="">
-    </div>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
 
-    <div class="input-group">
-      <label>Password</label>
-      <input type="password" placeholder="">
-    </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <p class="note">Minimum 6 characters, at least one letter & one number</p>
+      </div>
 
-    <p class="note">Minimum 6 characters, at least one letter & one number</p>
+      <div class="error-message" id="errorMessage">Please fill in all fields correctly</div>
+    </form>
   </div>
 
   <!-- Right Panel -->
   <div class="right">
     <div class="logo-box">
-      <img src="images/LOGO.png" alt="Onigiri Mascot">
-      <button>Create Account</button>
+      <img src="images/LOGO.png" alt="NihonGo Mascot">
+      <button id="createBtn" disabled>Create Account</button>
     </div>
   </div>
-  <form action="dashboard.html" method="get">
-  <input type="text" placeholder="Username" required>
-  <input type="email" placeholder="Email" required>
-  <input type="password" placeholder="Password" required>
-  <button type="submit">Create Account</button>
-</form>
 
+  <script>
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const createBtn = document.getElementById('createBtn');
+    const errorMessage = document.getElementById('errorMessage');
+
+    function validateForm() {
+      const username = usernameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Check if all fields are filled
+      const allFilled = username.length > 0 && email.length > 0 && password.length > 0;
+
+      // Validate email format
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      // Validate password (minimum 6 characters, at least one letter and one number)
+      const passwordValid = password.length >= 6 && /[a-zA-Z]/.test(password) && /\d/.test(password);
+
+      // Enable button only if all validations pass
+      if (allFilled && emailValid && passwordValid) {
+        createBtn.disabled = false;
+        errorMessage.classList.remove('show');
+      } else {
+        createBtn.disabled = true;
+      }
+    }
+
+    // Add event listeners to all inputs
+    usernameInput.addEventListener('input', validateForm);
+    emailInput.addEventListener('input', validateForm);
+    passwordInput.addEventListener('input', validateForm);
+
+    // Handle button click
+    createBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      const username = usernameInput.value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Final validation before submission
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const passwordValid = password.length >= 6 && /[a-zA-Z]/.test(password) && /\d/.test(password);
+
+      if (username && email && emailValid && password && passwordValid) {
+        // All validations passed, redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } else {
+        // Show error message
+        errorMessage.classList.add('show');
+      }
+    });
+  </script>
 </body>
 </html>
