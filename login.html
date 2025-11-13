@@ -71,7 +71,8 @@
             <input id="keep-logged" type="checkbox" name="keep-logged">
             <label for="keep-logged" style="color:#fff; font-weight:400; cursor:pointer;">Keep me logged in</label>
           </div>
-          <a class="forgot-password" href="#">Forgot Password?</a>
+          <a class="forgot-password" href="forgot_password.html">Forgot Password?</a>
+
         </div>
 
         <button id="loginBtn" type="submit">Login</button>
@@ -83,71 +84,54 @@
   </div>
 
   <script>
-    (function () {
-      // If already logged in — redirect to dashboard
-      if (localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser')) {
-        window.location.href = '/xampp/NihonGo/dashboard.html';
-        return;
-      }
+(function () {
+  // If already logged in — redirect to dashboard
+  // We'll rely on server-side protection, but quick local check removed to avoid prefix issues.
+  const loginForm = document.getElementById('loginForm');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const keepLogged = document.getElementById('keep-logged');
+  const errorMessage = document.getElementById('errorMessage');
+  const noAccount = document.getElementById('noAccount');
 
-      const loginForm = document.getElementById('loginForm');
-      const usernameInput = document.getElementById('username');
-      const passwordInput = document.getElementById('password');
-      const keepLogged = document.getElementById('keep-logged');
-      const errorMessage = document.getElementById('errorMessage');
-      const noAccount = document.getElementById('noAccount');
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMessage.classList.remove('show');
+    noAccount.style.display = 'none';
 
-      // On submit, check saved credentials
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        errorMessage.classList.remove('show');
-        noAccount.style.display = 'none';
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
 
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value.trim();
+    if (!username || !password) {
+      errorMessage.textContent = 'Please enter both username and password.';
+      errorMessage.classList.add('show');
+      return;
+    }
 
-        if (!username || !password) {
-          errorMessage.textContent = 'Please enter both username and password.';
-          errorMessage.classList.add('show');
-          return;
-        }
-
-        const storedRaw = localStorage.getItem('registeredUser');
-        if (!storedRaw) {
-          // no user registered
-          noAccount.style.display = 'block';
-          return;
-        }
-
-        try {
-          const stored = JSON.parse(storedRaw);
-          // stored object shape: { username, email, password } from signup page
-          if (stored.username === username && stored.password === password) {
-            // success: set logged in state
-            // use localStorage so dashboard logic relying on localStorage still works.
-            if (keepLogged.checked) {
-              localStorage.setItem('loggedInUser', username);
-              sessionStorage.setItem('loggedInUser', username);
-            } else {
-              // still set localStorage to simplify your current dashboard checks,
-              // and set sessionStorage as well (dashboard snippet below checks both).
-              localStorage.setItem('loggedInUser', username);
-              sessionStorage.setItem('loggedInUser', username);
-            }
-            // redirect to dashboard
-            window.location.href = '/xampp/NihonGo/login.html';
-          } else {
-            // wrong credentials
-            errorMessage.innerHTML = 'Incorrect username or password. <br><span style="display:block; margin-top:6px;"><a href="signup.html">Create an account</a> if you don\'t have one.</span>';
-            errorMessage.classList.add('show');
-          }
-        } catch (err) {
-          console.error('Error parsing stored user', err);
-          errorMessage.textContent = 'Internal error. Please try again later.';
-          errorMessage.classList.add('show');
-        }
+    try {
+      const res = await fetch('php/login.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ username, password, keep: keepLogged.checked })
       });
-    })();
-  </script>
+      const data = await res.json();
+      if (res.ok && data.success) {
+        window.location.href = 'dashboard.php';
+      } else {
+        if (data.error === 'invalid_credentials') {
+          errorMessage.textContent = 'Incorrect username or password.';
+        } else {
+          errorMessage.textContent = data.error || 'Login failed';
+        }
+        errorMessage.classList.add('show');
+      }
+    } catch (err) {
+      errorMessage.textContent = 'Network error. Try again.';
+      errorMessage.classList.add('show');
+    }
+  });
+})();
+</script>
+
 </body>
 </html>

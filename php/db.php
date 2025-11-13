@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 $DB_HOST = '127.0.0.1';
 $DB_NAME = 'nihongo_db';
-$DB_USER = 'root';        // default XAMPP MySQL user
-$DB_PASS = '';            // default usually empty on XAMPP
+$DB_USER = 'root';
+$DB_PASS = ''; // XAMPP default
 
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
