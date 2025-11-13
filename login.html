@@ -86,7 +86,7 @@
     (function () {
       // If already logged in — redirect to dashboard
       if (localStorage.getItem('loggedInUser') || sessionStorage.getItem('loggedInUser')) {
-        window.location.href = 'dashboard.html';
+        window.location.href = '/xampp/NihonGo/dashboard.html';
         return;
       }
 
@@ -135,7 +135,7 @@
               sessionStorage.setItem('loggedInUser', username);
             }
             // redirect to dashboard
-            window.location.href = 'dashboard.html';
+            window.location.href = '/xampp/NihonGo/login.html';
           } else {
             // wrong credentials
             errorMessage.innerHTML = 'Incorrect username or password. <br><span style="display:block; margin-top:6px;"><a href="signup.html">Create an account</a> if you don\'t have one.</span>';

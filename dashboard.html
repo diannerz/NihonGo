@@ -113,7 +113,7 @@
 <script>
   // Redirect to login if not logged in
   if (!localStorage.getItem('loggedInUser') && !sessionStorage.getItem('loggedInUser')) {
-    window.location.href = 'login.html';
+ window.location.href = '/xampp/NihonGo/login.html';
   }
 
   // Wire the exit icon (topbar) to log out — finds an image with alt="exit"
@@ -126,7 +126,7 @@
       sessionStorage.removeItem('loggedInUser');
       // optionally also clear registeredUser (commented out)
       // localStorage.removeItem('registeredUser');
-      window.location.href = 'login.html';
+ window.location.href = '/xampp/NihonGo/login.html';
     });
   })();
 </script>
@@ -137,7 +137,7 @@
     const settingsImg = document.querySelector('.topbar img[alt="gear"]');
     if (!settingsImg) return;
     settingsImg.addEventListener('click', () => {
-      window.location.href = 'settings.html';
+window.location.href = '/xampp/NihonGo/settings.html';
     });
   })();
 </script>

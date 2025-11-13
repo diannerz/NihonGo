@@ -249,7 +249,8 @@
 
   <script>
     // --- Redirects ---
-    document.getElementById('homeBtn').onclick = () => window.location.href = 'dashboard.html';
+    document.getElementById('homeBtn').onclick = () => window.location.href = '/xampp/NihonGo/dashboard.html';
+
     document.getElementById('exitIcon').onclick = () => {
       if (confirm('Log out and return to login?')) {
         localStorage.removeItem('loggedInUser');
@@ -257,7 +258,7 @@
         window.location.href = 'login.html';
       }
     };
-    document.getElementById('settingsIcon').onclick = () => window.location.href = 'settings.html';
+    document.getElementById('settingsIcon').onclick = () => window.location.href = '/xampp/NihonGo/settings.html';
     document.getElementById('profileIcon').onclick = () => alert('Profile view coming soon.');
 
     // --- Editable Name ---
