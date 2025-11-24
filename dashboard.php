@@ -10,11 +10,17 @@ if (!$user) {
 
 $uid = (int) $_SESSION['user_id'];
 
-$hiraCount = $pdo->query("SELECT COUNT(*) FROM kana_progress WHERE user_id=$uid AND kana_type='hiragana'")->fetchColumn();
-$kataCount = $pdo->query("SELECT COUNT(*) FROM kana_progress WHERE user_id=$uid AND kana_type='katakana'")->fetchColumn();
+// count distinct learned kana per type
+$hiraCount = (int) $pdo->query("SELECT COUNT(DISTINCT kana_char) FROM kana_progress WHERE user_id=$uid AND kana_type='hiragana'")->fetchColumn();
+$kataCount = (int) $pdo->query("SELECT COUNT(DISTINCT kana_char) FROM kana_progress WHERE user_id=$uid AND kana_type='katakana'")->fetchColumn();
+
+// enforce upper limit of 46
+$hiraCount = min($hiraCount, 46);
+$kataCount = min($kataCount, 46);
 
 $hiraPct = round(($hiraCount / 46) * 100);
 $kataPct = round(($kataCount / 46) * 100);
+
 ?>
 <!DOCTYPE html>
 
@@ -43,7 +49,7 @@ $kataPct = round(($kataCount / 46) * 100);
 
       <div class="menu-item">
         <img src="images/kana writing.png" alt="writing">
-        <span>Kana Character Writing</span>
+        <span>Vocabulary Quiz</span>
       </div>
 
       <a href="media.html" class="menu-item">
