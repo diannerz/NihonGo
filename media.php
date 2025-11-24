@@ -1,3 +1,13 @@
+<?php
+require "php/check_auth.php";
+require "php/db.php";
+
+// Redirect if not logged in
+if (!$user) {
+    header("Location: login.html");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en" class="manga-page">
 <head>
@@ -6,12 +16,24 @@
   <title>Manga — An egg’s tale</title>
   <link rel="stylesheet" href="media.css" />
 </head>
+
+<script>
+// ---- Send manga progress ONCE when page loads ----
+window.addEventListener("DOMContentLoaded", () => {
+  fetch("php/save_progress.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "manga_view" })
+  }).catch(()=>{});
+});
+</script>
+
 <body>
 
   <!-- HEADER -->
   <header class="top-bar">
     <div class="top-left">
-      <a href="dashboard.html" class="home-link">
+      <a href="dashboard.php" class="home-link">
         <img src="images/home.png" alt="home">
       </a>
       <div class="header-text-inline">
@@ -20,7 +42,7 @@
       </div>
     </div>
     <div class="top-right">
-      <img src="images/exit.png" alt="door">
+      <img src="images/exit.png" alt="door" id="exitBtn">
       <img src="images/setting.png" alt="gear">
       <img src="images/profile.png" alt="onigiri">
     </div>
@@ -67,5 +89,14 @@
   </main>
 
   <script src="script.js" defer></script>
+
+<script>
+// LOGOUT
+document.getElementById("exitBtn").addEventListener("click", () => {
+  if (!confirm("Log out?")) return;
+  window.location.href = "php/logout.php";
+});
+</script>
+
 </body>
 </html>

@@ -73,17 +73,29 @@ document.addEventListener('DOMContentLoaded', () => {
     i = Math.max(0, Math.min(i, slides.length - 1));
     current = i;
     slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    sendMangaProgress();
     // story text: guard against story length mismatch
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
     const sdata = story[i] || story[story.length - 1];
     enText.textContent = `“${sdata.en}”`;
     jpText.textContent = sdata.jp;
     romajiText.textContent = sdata.romaji;
     prevBtn.disabled = i === 0;
     nextBtn.disabled = i === slides.length - 1;
-    prevBtn.style.opacity = prevBtn.disabled ? 0.35 : 1;
-    nextBtn.style.opacity = nextBtn.disabled ? 0.35 : 1;
     renderDots(i);
-  }
+
+        // --- Notify server once per page load that manga is being viewed ---
+    if (!window.__mangaViewSent) {
+        fetch('php/save_progress.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ action: 'manga_view' })
+        }).catch(() => {});
+        window.__mangaViewSent = true;
+    }
+
+}
+
 
   prevBtn.addEventListener('click', () => updateSlide(current - 1));
   nextBtn.addEventListener('click', () => updateSlide(current + 1));
