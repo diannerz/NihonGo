@@ -20,7 +20,12 @@ $dpStmt = $pdo->prepare("
     WHERE user_id = :uid AND day_date = :day
     LIMIT 1
 ");
-$dpStmt->execute([':uid'=>$uid, ':day'=>$today]);
+$dpStmt->execute([
+    ':uid' => $uid,
+    ':day' => $today
+]);
+
+
 $dp = $dpStmt->fetch(PDO::FETCH_ASSOC) ?: ['flashcard_views'=>0,'manga_views'=>0,'vocab_quiz_completed'=>0];
 
 // prepare percentages or targets for the UI (the front-end animation uses data-target as percent)
@@ -69,36 +74,37 @@ $kataPct = round(($kataCount / 46) * 100);
 <body>
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <nav class="side-menu">
-      <div class="menu-item">
-        <img src="images/home.png" alt="home">
-        <span>Dashboard</span>
-      </div>
+<aside class="sidebar">
+  <nav class="side-menu">
 
-      <!-- FIXED LINK: now points to kana-charts.php -->
-      <a class="menu-item" href="kana-charts.php">
-        <img src="images/kana charts.png" alt="kana">
-        <span>Kana Charts and Flashcards</span>
-      </a>
+    <!-- Kana Charts & Flashcards -->
+    <a class="menu-item" href="kana-charts.php">
+      <img src="images/kana charts.png" alt="kana">
+      <span>Kana Charts & Flashcards</span>
+    </a>
 
-      <div class="menu-item">
-        <a class="menu-item" href="kana-quiz.php">
-        <img src="images/kana writing.png" alt="writing">
-        <span>Vocabulary Quiz</span>
-      </div>
+    <!-- Vocabulary Quiz -->
+    <a class="menu-item" href="kana-quiz.php">
+      <img src="images/kana writing.png" alt="quiz">
+      <span>Kana Quiz</span>
+    </a>
 
-      <a href="media.php" class="menu-item">
-        <img src="images/comics.png" alt="Media">
-        <span>Manga</span>
-      </a>
+    <!-- Manga -->
+    <a class="menu-item" href="media.php">
+      <img src="images/comics.png" alt="manga">
+      <span>Manga</span>
+    </a>
 
-      <div class="menu-item">
-        <img src="images/dictionary.png" alt="dict">
-        <span>Japanese Dictionary</span>
-      </div>
-    </nav>
-  </aside>
+    <!-- Japanese Dictionary -->
+    <div class="menu-item">
+      <img src="images/dictionary.png" alt="dictionary">
+      <span>Japanese Dictionary</span>
+    </div>
+
+  </nav>
+</aside>
+
+
 
   <!-- MAIN -->
   <main class="main">

@@ -29,30 +29,20 @@ body {
 }
 
 /* ---------------- SIDEBAR ---------------- */
+/* ---------------- SIDEBAR (UPDATED BIG ICON VERSION) ---------------- */
+/* ---------------- SIDEBAR (XXL ICON VERSION) ---------------- */
 .sidebar {
-  width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  background: var(--sidebar-bg);
-  color: var(--white);
+  width: 300px !important;        /* XXL sidebar width */
+  height: 100vh;
+  background-color: #1f484d;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 28px 12px;
-  gap: 18px;
-  flex-shrink: 0;
-  height: 100vh;
-  position: fixed; /* fixed so main content flows beside it */
-  top: 0;
+  padding-top: 50px;
+  position: fixed;
   left: 0;
-  overflow: hidden; /* hide any scrollbars */
-}
-
-/* logo at top */
-.sidebar .logo {
-  width: 130px;
-  height: auto;
-  margin-bottom: 12px;
-  display: block;
+  top: 0;
+  gap: 70px;                      /* spacing between items */
 }
 
 /* menu container */
@@ -61,58 +51,52 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  /* distribute menu items so they fit evenly */
-  justify-content: center;
-  height: calc(100vh - 56px); /* leave small breathing room from top padding */
+  gap: 70px;                      /* spacing between EACH icon */
 }
-
 
 /* each menu item */
 .menu-item {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 6px;
+  text-align: center;
+  color: white;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none;
   cursor: pointer;
-  transition: transform .12s ease, opacity .12s ease;
+  gap: 16px !important;
 }
 
-/* hover feel */
-.menu-item:hover { transform: translateY(-3px); opacity: .98; }
-
-/* larger icons */
-.menu-item img{
-  width: 76px;   /* big, but safe so all items fit */
-  height: auto;
+/* XXL — Super Large Icons */
+.menu-item img {
+  width: 170px !important;        /* <-- XXL ICON SIZE */
+  height: auto !important;
   display: block;
-  object-fit: contain;
-  -webkit-user-drag: none;
-  user-select: none;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.06));
+  filter: drop-shadow(2px 4px 5px rgba(0,0,0,0.45));
+  transition: transform 0.22s ease;
 }
 
-/* larger labels */
-.menu-item span{
-  font-weight:800;
-  font-size:14px;
-  line-height:1.05;
-  letter-spacing:0.6px;
-  color:var(--white);
-  text-align:center;
-  white-space:nowrap;
-  padding:0 6px;
+/* XXL — Large Text Labels */
+.menu-item span {
+  margin-top: 8px;
+  font-size: 1.75rem !important;  /* <-- XXL TEXT */
+  font-weight: 900 !important;
+  letter-spacing: 1.2px;
+  text-shadow: 0px 2px 3px rgba(0,0,0,0.35);
 }
 
-/* allow specific labels to wrap if needed: add class "wrap" to the span in HTML */
-.menu-item span.wrap{
-  white-space:normal;
-  word-break:break-word;
+/* hover effect */
+.menu-item:hover img {
+  transform: scale(1.12);
 }
+
+/* ensure content shifts properly */
+:root {
+  --sidebar-w: 300px !important;  /* push main content to the right */
+}
+
+
 
 /* ---------------- MAIN AREA ---------------- */
 .main {

@@ -240,7 +240,7 @@
       <div class="right-col">
         <div class="panel-title">Avatar</div>
         <div class="avatar-wrap">
-          <img id="avatarImg" src="images/dianne.png" alt="avatar">
+          <img id="avatarImg" src="images/dianne.jpg" alt="avatar">
           <a class="change-avatar" id="changeAvatar">Click to change your avatar</a>
         </div>
       </div>
@@ -249,7 +249,8 @@
 
   <script>
     // --- Redirects ---
-    document.getElementById('homeBtn').onclick = () => window.location.href = '/xampp/NihonGo/dashboard.html';
+    document.getElementById('homeBtn').onclick = () => window.location.href = '/NihonGo/dashboard.php';
+
 
     document.getElementById('exitIcon').onclick = () => {
       if (confirm('Log out and return to login?')) {
@@ -258,7 +259,7 @@
         window.location.href = 'login.html';
       }
     };
-    document.getElementById('settingsIcon').onclick = () => window.location.href = '/xampp/NihonGo/settings.html';
+    document.getElementById('settingsIcon').onclick = () => window.location.href = '/NihonGo/settings.html';
     document.getElementById('profileIcon').onclick = () => alert('Profile view coming soon.');
 
     // --- Editable Name ---
@@ -287,9 +288,9 @@
     const avatarImg = document.getElementById('avatarImg');
     const changeAvatar = document.getElementById('changeAvatar');
 
-    // ✅ FIX 3: ensure image always loads properly
+
     avatarImg.onerror = () => {
-      avatarImg.src = './images/dianne.png';
+      avatarImg.src = '/images/dianne.jpg';
     };
 
     changeAvatar.onclick = () => {
@@ -298,7 +299,7 @@
         avatarImg.src = newUrl;
         localStorage.setItem('avatarImg', newUrl);
       } else {
-        avatarImg.src = './images/dianne.png';
+        avatarImg.src = '/images/dianne.jpg';
         localStorage.removeItem('avatarImg');
       }
     };

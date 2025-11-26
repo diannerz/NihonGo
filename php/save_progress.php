@@ -57,24 +57,25 @@ if (in_array($action, ['view','master','unmaster'])) {
 
 /* ------------------------------------
    VIEW event (increments view_count)
-   plus daily unique-count logic
+   and increments daily "view 5 flashcards" challenge
 --------------------------------------*/
 if ($action === 'view') {
+
     // increment view_count
     $pdo->prepare("
-        UPDATE kana_progress 
+        UPDATE kana_progress
         SET view_count = view_count + 1
         WHERE user_id = :uid AND kana_type = :type AND kana_char = :kana
     ")->execute([':uid'=>$uid, ':type'=>$type, ':kana'=>$kana]);
 
-    // try to insert a unique daily_kana_views row; if inserted, increment daily_progress.flashcard_views
+    // ensure only 1 unique view per kana per day
     $insertView = $pdo->prepare("
         INSERT IGNORE INTO daily_kana_views (user_id, day_date, kana_type, kana_char)
         VALUES (:uid, :day, :type, :kana)
     ");
     $insertView->execute([':uid'=>$uid, ':day'=>$today, ':type'=>$type, ':kana'=>$kana]);
 
-    // if row affected (inserted), then update daily_progress
+    // if inserted = new kana viewed today → increment flashcard_views
     if ($insertView->rowCount() > 0) {
         $upsert = $pdo->prepare("
             INSERT INTO daily_progress (user_id, day_date, flashcard_views)
@@ -87,8 +88,6 @@ if ($action === 'view') {
 
 /* ------------------------------------
    MASTER (set mastery_level = 2)
-   When user marks as mastered, we update kana_progress mastery
-   Mastered counts are used for "My progress" (dashboard)
 --------------------------------------*/
 if ($action === 'master') {
     $pdo->prepare("
@@ -111,7 +110,6 @@ if ($action === 'unmaster') {
 
 /* ------------------------------------
    Manga view (page opened / panel viewed)
-   We count manga_views (per day) — caller should ensure not to spam
 --------------------------------------*/
 if ($action === 'manga_view') {
     $upsert = $pdo->prepare("
@@ -150,7 +148,7 @@ if (in_array($action, ['view','master','unmaster'])) {
     $mastery_level = (int)$newMastery->fetchColumn();
 }
 
-// total mastered count for the type (used for the "My progress" widget)
+// total mastered count for script progress bar
 $type_mastered_count = 0;
 if (in_array($type, ['hiragana','katakana'])) {
     $countStmt = $pdo->prepare("
@@ -164,21 +162,32 @@ if (in_array($type, ['hiragana','katakana'])) {
 
 // today's daily_progress values
 $dpStmt = $pdo->prepare("
-    SELECT flashcard_views, manga_views, vocab_quiz_completed
+    SELECT 
+      COALESCE(flashcard_views,0) AS flashcard_views,
+      COALESCE(manga_views,0) AS manga_views,
+      COALESCE(vocab_quiz_completed,0) AS vocab_quiz_completed
     FROM daily_progress
     WHERE user_id = :uid AND day_date = :day
     LIMIT 1
 ");
 $dpStmt->execute([':uid'=>$uid, ':day'=>$today]);
-$dpRow = $dpStmt->fetch(PDO::FETCH_ASSOC) ?: ['flashcard_views'=>0,'manga_views'=>0,'vocab_quiz_completed'=>0];
+$row = $dpStmt->fetch(PDO::FETCH_ASSOC) ?: [
+    'flashcard_views' => 0,
+    'manga_views' => 0,
+    'vocab_quiz_completed' => 0
+];
+
+$daily = [
+    "flashcard_views"       => (int)$row['flashcard_views'],
+    "manga_views"           => (int)$row['manga_views'],
+    "vocab_quiz_completed"  => (int)$row['vocab_quiz_completed']
+];
 
 echo json_encode([
-    'success' => true,
-    'mastery_level' => $mastery_level,
-    'type_count' => $type_mastered_count,
-    'today' => [
-        'flashcard_views' => (int)$dpRow['flashcard_views'],
-        'manga_views' => (int)$dpRow['manga_views'],
-        'vocab_quiz_completed' => (int)$dpRow['vocab_quiz_completed']
-    ]
+    "success"       => true,
+    "mastery_level" => $mastery_level,
+    "type_count"    => $type_mastered_count,
+    "daily"         => $daily
 ]);
+exit;
+
