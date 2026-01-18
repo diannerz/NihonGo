@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('nextBtn').addEventListener('click', () => {
     // REQUIRE an answer before moving on. Skip is the only way to advance without answering.
     if (!answeredThis) {
-      alert('PLEASE CHOOSE AN ANSWER (or click Skip).');
+      alert('PLEASE CHOOSE AN ANSWER (or Skip if you dont know).');
       return;
     }
     // reset answered flag and advance
