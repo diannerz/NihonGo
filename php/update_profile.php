@@ -1,33 +1,38 @@
 <?php
-require "db.php";
 require "check_auth.php";
-header('Content-Type: application/json');
+require "db.php";
 
 if (!$user) {
   http_response_code(401);
-  echo json_encode(['error' => 'unauthorized']);
   exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+$data = json_decode(file_get_contents("php://input"), true);
 
-$display = trim($data['display_name'] ?? '');
-$bio = trim($data['bio'] ?? '');
-$avatar = trim($data['avatar_url'] ?? '');
+$fields = [];
+$params = [':id' => $user['id']];
 
-$stmt = $pdo->prepare("
-  UPDATE users
-  SET display_name = :d,
-      bio = :b,
-      avatar_url = :a
-  WHERE id = :id
-");
+if (isset($data['display_name'])) {
+  $fields[] = "display_name = :dn";
+  $params[':dn'] = trim($data['display_name']);
+}
 
-$stmt->execute([
-  ':d' => $display ?: null,
-  ':b' => $bio ?: null,
-  ':a' => $avatar ?: null,
-  ':id' => $user['id']
-]);
+if (isset($data['bio'])) {
+  $fields[] = "bio = :bio";
+  $params[':bio'] = trim($data['bio']);
+}
 
-echo json_encode(['success' => true]);
+if (isset($data['avatar_url'])) {
+  $fields[] = "avatar_url = :av";
+  $params[':av'] = trim($data['avatar_url']);
+}
+
+if (!$fields) {
+  exit;
+}
+
+$sql = "UPDATE users SET " . implode(", ", $fields) . " WHERE id = :id";
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+
+echo json_encode(['success'=>true]);

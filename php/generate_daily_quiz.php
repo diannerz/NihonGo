@@ -65,8 +65,14 @@ foreach ($selected as $item) {
 $payload = json_encode(['date'=>$day,'quiz'=>$quiz], JSON_UNESCAPED_UNICODE);
 
 // upsert into daily_quiz
-$stmt = $pdo->prepare("INSERT INTO daily_quiz (day_date, quiz_json, created_at) VALUES (:day, :json, NOW())
-    ON DUPLICATE KEY UPDATE quiz_json = :json, created_at = NOW()");
-$stmt->execute([':day'=>$day, ':json'=>$payload]);
+$stmt = $pdo->prepare("
+INSERT INTO daily_quiz (user_id, day_date, quiz_json, created_at)
+VALUES (:uid, :day, :json, NOW())
+ON DUPLICATE KEY UPDATE quiz_json = :json
+");
+$stmt->execute([
+  ':uid' => $uid,
+  ':day' => $day,
+  ':json' => $payload
+]);
 
-echo $payload;

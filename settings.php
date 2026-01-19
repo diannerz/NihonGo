@@ -41,6 +41,25 @@ $avatar = $profile['avatar_url'] ?? '';
       min-height: 100vh;
     }
 
+    .avatar-box {
+  width: 180px;
+  height: 180px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
     /* ✅ FIX 1: topbar matches dashboard, icons properly sized */
     .topbar {
       display: flex;
@@ -240,110 +259,134 @@ $avatar = $profile['avatar_url'] ?? '';
 
   <!-- ✅ FIXED CENTERED PANEL -->
   <main>
-    <div class="profile-panel">
-      <div class="left-col">
-        <div class="panel-title">Display Name</div>
-<div class="name-box"><?= htmlspecialchars($displayName) ?></div>
-        <div class="small-actions">
-          <span class="edit-btn" id="editName">Edit</span>
-          <span class="save-btn" id="saveName">Save</span>
-        </div>
+  <div class="profile-panel">
 
-        <div class="panel-title" style="margin-top: 20px;">Profile Info</div>
-        <label class="bio-label" for="bioText">Bio</label>
-        <div class="bio-box">
-  <?= $bio
-    ? nl2br(htmlspecialchars($bio))
-    : '<span class="bio-placeholder">Input your bio here.</span>'
-  ?>
+    <!-- LEFT -->
+    <div class="left-col">
+
+      <!-- DISPLAY NAME -->
+      <div class="panel-title">Display Name</div>
+      <div class="name-box" id="displayName" contenteditable="false">
+        <?= htmlspecialchars($displayName) ?>
+      </div>
+      <div class="small-actions">
+        <span class="edit-btn" id="editName">Edit</span>
+        <span class="save-btn" id="saveName">Save</span>
+      </div>
+
+      <!-- BIO -->
+<div class="panel-title" style="margin-top:20px;">Profile Info</div>
+<label class="bio-label">Bio</label>
+
+<div class="bio-box" id="bioText" contenteditable="false">
+  <?= htmlspecialchars($bio) ?>
 </div>
 
-        <div class="small-actions" style="margin-top: 12px;">
-          <span class="edit-btn" id="editBio">Edit</span>
-          <span class="save-btn" id="saveBio">Save</span>
-        </div>
-      </div>
+<div class="small-actions">
+  <span class="edit-btn" id="editBio">Edit</span>
+  <span class="save-btn" id="saveBio">Save</span>
+</div>
 
-      <div class="right-col">
-        <div class="panel-title">Avatar</div>
-        <div class="avatar-wrap">
-<?php if ($avatar): ?>
-  <img src="<?= htmlspecialchars($avatar) ?>" alt="avatar">
-<?php else: ?>
-  <div class="avatar-placeholder">No Avatar</div>
-<?php endif; ?>
 
-        </div>
-      </div>
+    <!-- AVATAR -->
+   <div class="right-col">
+  <div class="panel-title">Avatar</div>
+
+  <div class="avatar-wrap">
+    <div class="avatar-box" id="avatarBox">
+      <?php if ($avatar): ?>
+        <img id="avatarImg" src="<?= htmlspecialchars($avatar) ?>" alt="avatar">
+      <?php else: ?>
+        <span>No Avatar</span>
+      <?php endif; ?>
     </div>
-  </main>
+  </div>
 
-  <script>
-    // --- Redirects ---
-    document.getElementById('homeBtn').onclick = () => window.location.href = '/NihonGo/dashboard.php';
-
-
-    document.getElementById('exitIcon').onclick = () => {
-      if (confirm('Log out and return to login?')) {
-        localStorage.removeItem('loggedInUser');
-        sessionStorage.removeItem('loggedInUser');
-        window.location.href = 'login.html';
-      }
-    };
-    document.getElementById('settingsIcon').onclick = () => window.location.href = '/NihonGo/settings.html';
-    document.getElementById('profileIcon').onclick = () => alert('Profile view coming soon.');
-
-    // --- Editable Name ---
-    const nameBox = document.getElementById('displayName');
-    document.getElementById('editName').onclick = () => {
-      nameBox.contentEditable = true;
-      nameBox.focus();
-    };
-    document.getElementById('saveName').onclick = () => {
-      nameBox.contentEditable = false;
-      localStorage.setItem('displayName', nameBox.textContent.trim());
-    };
-
-    // --- Editable Bio ---
-    const bioBox = document.getElementById('bioText');
-    document.getElementById('editBio').onclick = () => {
-      bioBox.contentEditable = true;
-      bioBox.focus();
-    };
-    document.getElementById('saveBio').onclick = () => {
-      bioBox.contentEditable = false;
-      localStorage.setItem('bioText', bioBox.innerHTML.trim());
-    };
-
-    // --- Avatar ---
-    const avatarImg = document.getElementById('avatarImg');
-    const changeAvatar = document.getElementById('changeAvatar');
+  <a class="change-avatar" id="changeAvatar">Click to change your avatar</a>
+</div>
 
 
-    avatarImg.onerror = () => {
-      avatarImg.src = '/images/dianne.jpg';
-    };
+  </div>
+</main>
 
-    changeAvatar.onclick = () => {
-      const newUrl = prompt('Enter new avatar image URL (or leave blank to reset):');
-      if (newUrl) {
-        avatarImg.src = newUrl;
-        localStorage.setItem('avatarImg', newUrl);
-      } else {
-        avatarImg.src = '/images/dianne.jpg';
-        localStorage.removeItem('avatarImg');
-      }
-    };
+ <script>
+const nameBox = document.getElementById('displayName');
+const bioBox = document.getElementById('bioText');
 
-    // Load stored
-    window.addEventListener('DOMContentLoaded', () => {
-      const n = localStorage.getItem('displayName');
-      const b = localStorage.getItem('bioText');
-      const a = localStorage.getItem('avatarImg');
-      if (n) nameBox.textContent = n;
-      if (b) bioBox.innerHTML = b;
-      if (a) avatarImg.src = a;
-    });
-  </script>
+/* ---------------- DISPLAY NAME ---------------- */
+document.getElementById('editName').onclick = () => {
+  nameBox.contentEditable = true;
+  nameBox.focus();
+};
+
+document.getElementById('saveName').onclick = async () => {
+  nameBox.contentEditable = false;
+
+  await fetch('php/update_profile.php', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      display_name: nameBox.innerText.trim()
+    })
+  });
+};
+
+/* ---------------- BIO ---------------- */
+document.getElementById('editBio').onclick = () => {
+  bioBox.contentEditable = true;
+  bioBox.focus();
+};
+
+document.getElementById('saveBio').onclick = async () => {
+  bioBox.contentEditable = false;
+
+  await fetch('php/update_profile.php', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      bio: bioBox.innerText.trim()
+    })
+  });
+};
+
+/* ---------------- AVATAR ---------------- */
+document.getElementById('changeAvatar').onclick = async () => {
+  const url = prompt('Enter avatar image URL');
+  if (!url) return;
+
+  await fetch('php/update_profile.php', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      avatar_url: url
+    })
+  });
+
+  location.reload();
+};
+</script>
+
+<script>
+/* ---------- TOPBAR NAVIGATION FIX ---------- */
+document.getElementById('homeBtn')?.addEventListener('click', () => {
+  window.location.href = '/NihonGo/dashboard.php';
+});
+
+document.getElementById('exitIcon')?.addEventListener('click', () => {
+  if (!confirm('Log out?')) return;
+  window.location.href = '/NihonGo/php/logout.php';
+});
+
+document.getElementById('settingsIcon')?.addEventListener('click', () => {
+  // already here, but safe
+  window.location.href = '/NihonGo/settings.php';
+});
+
+document.getElementById('profileIcon')?.addEventListener('click', () => {
+  alert('Profile page coming soon.');
+});
+</script>
+
+
 </body>
 </html>
