@@ -95,11 +95,11 @@ $kataPct = round(($kataCount / 46) * 100);
       <span>Manga</span>
     </a>
 
-    <!-- Japanese Dictionary -->
-    <div class="menu-item">
-      <img src="images/dictionary.png" alt="dictionary">
-      <span>Japanese Dictionary</span>
-    </div>
+<a class="menu-item" href="dictionary.php">
+  <img src="images/dictionary.png" alt="dictionary">
+  <span>Japanese Dictionary</span>
+</a>
+
 
   </nav>
 </aside>
@@ -189,7 +189,8 @@ $kataPct = round(($kataCount / 46) * 100);
     });
 
     document.getElementById("settingsBtn").addEventListener("click", () => {
-      window.location.href = "settings.html";
+window.location.href = "/NihonGo/settings.php";
+
     });
   </script>
 

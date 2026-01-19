@@ -12,6 +12,12 @@
   --shadow-soft: rgba(0,0,0,0.06);
 }
 
+.bio-placeholder {
+  opacity: 0.5;
+  font-style: italic;
+}
+
+
 /* reset & base */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -29,8 +35,6 @@ body {
 }
 
 /* ---------------- SIDEBAR ---------------- */
-/* ---------------- SIDEBAR (UPDATED BIG ICON VERSION) ---------------- */
-/* ---------------- SIDEBAR (XXL ICON VERSION) ---------------- */
 .sidebar {
   width: 300px !important;        /* XXL sidebar width */
   height: 100vh;
@@ -70,7 +74,7 @@ body {
 
 /* XXL — Super Large Icons */
 .menu-item img {
-  width: 170px !important;        /* <-- XXL ICON SIZE */
+  width: 120px !important;        /* <-- XXL ICON SIZE */
   height: auto !important;
   display: block;
   filter: drop-shadow(2px 4px 5px rgba(0,0,0,0.45));
@@ -606,4 +610,50 @@ manga-page.top-bar {
   }
   .prev { left: -30px; }
   .next { right: -30px; }
+}
+
+/* DICTIONARY ONLY */
+.dictionary-page .dictionary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.dictionary-page .dict-card {
+  background: #8ea6ab;
+  border-radius: 32px;
+  padding: 24px;
+  color: white;
+  position: relative;
+  min-height: 260px;
+}
+
+.dictionary-page .dict-card img {
+  width: 90px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.dictionary-page .dict-card h2 {
+  font-size: 2.2rem;
+}
+
+.dictionary-page .romaji {
+  font-size: 1.3rem;
+  color: #e7fbf7;
+  margin-bottom: 6px;
+}
+
+.dictionary-page .pos {
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.dictionary-page .sound-btn {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  border-radius: 50%;
+  font-size: 1.4rem;
 }

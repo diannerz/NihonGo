@@ -303,6 +303,9 @@ if (!$user) {
 /* ---------- full kana lists extracted from your provided arrays ---------- */
 
 
+
+
+
 const hiraData = [
   { kana: "あ", romaji: "a", mnemonic: "When the fish got stabbed by the sword, it went a!", vocab_jp: "あめ", vocab_romaji: "ame", vocab_eng: "candy / rain", stroke: "hiraganaa.gif", vocabImg: "ame.png" },
   { kana: "い", romaji: "i", mnemonic: "Two eels swimming around each other. Eek!", vocab_jp: "いぬ", vocab_romaji: "inu", vocab_eng: "dog", stroke: "hiraganai.gif", vocabImg: "inu.png" },
@@ -448,6 +451,28 @@ if (currentIndex === -1) currentIndex = 0;
 let currentKanaObj = null;
 let currentMastery = 0; // 0 or 2 (mastered)
 let lastTypeCount = 0;
+
+/* ================= KANA SOUND ================= */
+
+const kanaAudio = new Audio();
+kanaAudio.preload = "auto";
+
+const kanaSoundBtn = document.getElementById("kanaSoundTop");
+
+kanaSoundBtn.addEventListener("click", () => {
+  if (!currentKanaObj || !currentKanaObj.romaji) return;
+
+  const romaji = currentKanaObj.romaji.toLowerCase();
+  const soundPath = `/NihonGo/sounds/kana/${romaji}.mp3`;
+
+  kanaAudio.src = soundPath;
+  kanaAudio.currentTime = 0;
+
+  kanaAudio.play().catch(err => {
+    console.warn("Missing kana audio:", soundPath);
+  });
+});
+
 
 /* small client-side cache so mastered marks appear instantly while swiping */
 const masteredCache = {}; // { "あ|hiragana": true }

@@ -1,5 +1,5 @@
 <?php
-// kana-charts.php — protected page
+
 require __DIR__ . '/php/check_auth.php';
 if (!$user) {
     header('Location: login.html');

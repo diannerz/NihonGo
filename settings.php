@@ -1,4 +1,27 @@
+<?php
+require "php/check_auth.php";
+require "php/db.php";
+
+if (!$user) {
+    header("Location: login.html");
+    exit;
+}
+
+$stmt = $pdo->prepare("
+    SELECT username, display_name, bio, avatar_url
+    FROM users
+    WHERE id = :id
+");
+$stmt->execute([':id' => $user['id']]);
+$profile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$displayName = $profile['display_name'] ?: $profile['username'];
+$bio = $profile['bio'] ?? '';
+$avatar = $profile['avatar_url'] ?? '';
+?>
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -220,7 +243,7 @@
     <div class="profile-panel">
       <div class="left-col">
         <div class="panel-title">Display Name</div>
-        <div class="name-box" id="displayName">Dianne</div>
+<div class="name-box"><?= htmlspecialchars($displayName) ?></div>
         <div class="small-actions">
           <span class="edit-btn" id="editName">Edit</span>
           <span class="save-btn" id="saveName">Save</span>
@@ -228,9 +251,13 @@
 
         <div class="panel-title" style="margin-top: 20px;">Profile Info</div>
         <label class="bio-label" for="bioText">Bio</label>
-        <div class="bio-box" id="bioText">
-          Hello! I’m a 3<sup>rd</sup> year IT student at SISC learning JP.
-        </div>
+        <div class="bio-box">
+  <?= $bio
+    ? nl2br(htmlspecialchars($bio))
+    : '<span class="bio-placeholder">Input your bio here.</span>'
+  ?>
+</div>
+
         <div class="small-actions" style="margin-top: 12px;">
           <span class="edit-btn" id="editBio">Edit</span>
           <span class="save-btn" id="saveBio">Save</span>
@@ -240,8 +267,12 @@
       <div class="right-col">
         <div class="panel-title">Avatar</div>
         <div class="avatar-wrap">
-          <img id="avatarImg" src="images/dianne.jpg" alt="avatar">
-          <a class="change-avatar" id="changeAvatar">Click to change your avatar</a>
+<?php if ($avatar): ?>
+  <img src="<?= htmlspecialchars($avatar) ?>" alt="avatar">
+<?php else: ?>
+  <div class="avatar-placeholder">No Avatar</div>
+<?php endif; ?>
+
         </div>
       </div>
     </div>
