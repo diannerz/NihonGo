@@ -52,12 +52,21 @@ if (!$user) {
       <span>Back to Dashboard</span>
     </a>
   </div>
-  <div class="topbar-right">
+<div class="topbar-right">
+  <a href="/NihonGo/php/logout.php" title="Logout">
     <img src="/NihonGo/images/exit.png" alt="logout">
+  </a>
+
+  <a href="/NihonGo/settings.php" title="Settings">
     <img src="/NihonGo/images/setting.png" alt="settings">
+  </a>
+
+  <a href="/NihonGo/profile.php" title="Profile">
     <img src="/NihonGo/images/profile.png" alt="profile">
-  </div>
+  </a>
 </div>
+
+
 
 <div class="page">
   <div class="chart-panel">

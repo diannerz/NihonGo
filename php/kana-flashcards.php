@@ -48,12 +48,21 @@ if (!$user) {
     </div>
   </div>
 
-  <div class="top-right">
-    <img src="/NihonGo/images/exit.png" alt="Exit" id="exitBtn" style="height:50px;">
-    <img src="/NihonGo/images/setting.png" alt="Settings" style="height:50px;">
-    <img src="/NihonGo/images/profile.png" alt="Profile" style="height:50px;">
-  </div>
+<div class="topbar-right">
+  <a href="/NihonGo/php/logout.php" title="Logout">
+    <img src="/NihonGo/images/exit.png" alt="logout">
+  </a>
+
+  <a href="/NihonGo/settings.php" title="Settings">
+    <img src="/NihonGo/images/setting.png" alt="settings">
+  </a>
+
+  <a href="/NihonGo/profile.php" title="Profile">
+    <img src="/NihonGo/images/profile.png" alt="profile">
+  </a>
 </div>
+
+
 
 <div class="flashcard">
   <div class="left-panel">

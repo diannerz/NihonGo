@@ -11,29 +11,34 @@ if (!$user) {
 $uid = (int) $_SESSION['user_id'];
 
 // fetch today's daily progress
-$today = (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d');
-$dpStmt = $pdo->prepare("
-    SELECT COALESCE(flashcard_views,0) AS flashcard_views,
-           COALESCE(manga_views,0) AS manga_views,
-           COALESCE(vocab_quiz_completed,0) AS vocab_quiz_completed
+$today = (new DateTime('now', new DateTimeZone('Asia/Manila')))->format('Y-m-d');
+
+$dailyStmt = $pdo->prepare("
+    SELECT 
+        COALESCE(flashcard_views,0) AS flashcard_views,
+        COALESCE(manga_views,0) AS manga_views,
+        COALESCE(vocab_quiz_completed,0) AS vocab_quiz_completed
     FROM daily_progress
-    WHERE user_id = :uid AND day_date = :day
+    WHERE user_id = :uid
+      AND day_date = :day
     LIMIT 1
 ");
-$dpStmt->execute([
-    ':uid' => $uid,
+$dailyStmt->execute([
+    ':uid' => $_SESSION['user_id'],
     ':day' => $today
 ]);
 
+$daily = $dailyStmt->fetch(PDO::FETCH_ASSOC) ?: [
+    'flashcard_views' => 0,
+    'manga_views' => 0,
+    'vocab_quiz_completed' => 0
+];
 
-$dp = $dpStmt->fetch(PDO::FETCH_ASSOC) ?: ['flashcard_views'=>0,'manga_views'=>0,'vocab_quiz_completed'=>0];
 
-// prepare percentages or targets for the UI (the front-end animation uses data-target as percent)
-// I'll assume each challenge's maximum for the progress bar is 100% and that the track expects percent.
-// For your "View 5 kana flashcards" challenge we treat 5 views as 100% (so compute based on 5).
-$view5_target = min(100, round(($dp['flashcard_views'] / 5) * 100));
-$manga_target = min(100, round(($dp['manga_views'] / 1) * 100)); // if reading manga once equals 100%
-$quiz_target = min(100, round(($dp['vocab_quiz_completed'] / 1) * 100)); // adjust maxima as you wish
+$view5_target = min(100, round(($daily['flashcard_views'] / 5) * 100));
+$manga_target = min(100, round(($daily['manga_views'] / 1) * 100));
+$quiz_target  = min(100, round(($daily['vocab_quiz_completed'] / 1) * 100));
+
 
 
 // count distinct mastered kana per type (mastery_level >= 2)
@@ -194,7 +199,7 @@ window.location.href = "/NihonGo/settings.php";
     });
   </script>
 
-  <!-- ADD THIS -->
+
   <script src="script.js" defer></script>
 
 </body>

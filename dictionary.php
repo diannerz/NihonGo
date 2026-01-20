@@ -44,32 +44,6 @@ $totalPages = max(1, ceil($total / $limit));
 
 <body>
 
-<!-- SIDEBAR (UNCHANGED) -->
-<aside class="sidebar">
-  <nav class="side-menu">
-
-    <a class="menu-item" href="kana-charts.php">
-      <img src="images/kana charts.png">
-      <span>Kana Charts & Flashcards</span>
-    </a>
-
-    <a class="menu-item" href="kana-quiz.php">
-      <img src="images/kana writing.png">
-      <span>Kana Quiz</span>
-    </a>
-
-    <a class="menu-item" href="media.php">
-      <img src="images/comics.png">
-      <span>Manga</span>
-    </a>
-
-    <a class="menu-item" href="dictionary.php">
-      <img src="images/dictionary.png">
-      <span>Japanese Dictionary</span>
-    </a>
-
-  </nav>
-</aside>
 
 <!-- MAIN -->
 <main class="main">
@@ -88,24 +62,29 @@ $totalPages = max(1, ceil($total / $limit));
     </div>
   </div>
 
-  <div class="top-right">
-    <img src="images/exit.png">
-    <img src="images/setting.png">
-    <img src="images/profile.png">
-  </div>
+<div class="top-right">
+  <img src="images/exit.png" id="exitBtn" alt="Exit">
+  <img src="images/setting.png" id="settingsBtn" alt="Settings">
+  <img src="images/profile.png" alt="Profile">
 </div>
 
+
 <script>
+    exitBtn.onclick = () => confirm('Log out?') && (location.href='php/logout.php');
+settingsBtn.onclick = () => location.href='settings.php';
+profileBtn.onclick = () => alert('Profile view coming soon');
+
+
     document.getElementById("exitBtn").addEventListener("click", () => {
       if (!confirm("Log out?")) return;
       window.location.href = "php/logout.php";
     });
 
     document.getElementById("settingsBtn").addEventListener("click", () => {
-      window.location.href = "settings.html";
+      window.location.href = "settings.php";
     });
   </script>
-  
+
   <!-- CONTENT -->
   <div class="content dictionary-page">
 
@@ -168,7 +147,7 @@ document.getElementById("exitBtn").onclick = () => {
   if (confirm("Log out?")) location.href = "php/logout.php";
 };
 document.getElementById("settingsBtn").onclick = () => {
-  location.href = "settings.html";
+  location.href = "settings.php";
 };
 </script>
 

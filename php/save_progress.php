@@ -15,7 +15,8 @@ $type = strtolower(trim($input['type'] ?? ''));
 $action = $input['action'] ?? ''; // 'view', 'master', 'unmaster', 'manga_view', 'quiz_complete'
 
 $uid = (int) $_SESSION['user_id'];
-$today = (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d'); // use UTC or change to server timezone
+$today = (new DateTime('now', new DateTimeZone('Asia/Manila')))->format('Y-m-d'); //MANILA TIME FOR REFRESH OF DAILY CHALLENGES
+
 
 // validate
 if (!in_array($action, ['view','master','unmaster','manga_view','quiz_complete']) ) {

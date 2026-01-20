@@ -387,7 +387,7 @@ document.getElementById('exitBtn').addEventListener('click', () => {
   window.location.href = 'php/logout.php';
 });
 document.getElementById('settingsBtn').addEventListener('click', () => {
-  window.location.href = 'settings.html';
+  window.location.href = 'settings.php';
 });
 document.getElementById('profileBtn').addEventListener('click', () => {
   window.location.href = 'dashboard.php';

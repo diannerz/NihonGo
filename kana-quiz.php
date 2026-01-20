@@ -1,5 +1,4 @@
 <?php
-// /NihonGo/kana-quiz.php
 require __DIR__ . '/php/check_auth.php';
 if (!$user) {
     header('Location: login.html');
@@ -9,125 +8,115 @@ require __DIR__ . '/php/db.php';
 
 $uid = (int) $_SESSION['user_id'];
 
-// fetch both type-wide distinct mastered counts to show progress (we use both because quiz is mixed)
-$hiraStmt = $pdo->prepare("SELECT COUNT(DISTINCT kana_char) as cnt FROM kana_progress WHERE user_id = :uid AND kana_type = 'hiragana' AND mastery_level = 2");
+/* Initial progress counts */
+$hiraStmt = $pdo->prepare("
+  SELECT COUNT(DISTINCT kana_char)
+  FROM kana_progress
+  WHERE user_id=:uid AND kana_type='hiragana' AND mastery_level=2
+");
 $hiraStmt->execute([':uid'=>$uid]);
-$hiraCount = (int)$hiraStmt->fetchColumn();
-$hiraCount = min($hiraCount, 46);
-$hiraPct = (int) round(($hiraCount / 46) * 100);
+$hiraCount = min((int)$hiraStmt->fetchColumn(), 46);
 
-$kataStmt = $pdo->prepare("SELECT COUNT(DISTINCT kana_char) as cnt FROM kana_progress WHERE user_id = :uid AND kana_type = 'katakana' AND mastery_level = 2");
+$kataStmt = $pdo->prepare("
+  SELECT COUNT(DISTINCT kana_char)
+  FROM kana_progress
+  WHERE user_id=:uid AND kana_type='katakana' AND mastery_level=2
+");
 $kataStmt->execute([':uid'=>$uid]);
-$kataCount = (int)$kataStmt->fetchColumn();
-$kataCount = min($kataCount, 46);
-$kataPct = (int) round(($kataCount / 46) * 100);
-
+$kataCount = min((int)$kataStmt->fetchColumn(), 46);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kana Quiz — NihonGo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-  <style>
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 18px;
-      background-color: #6b9aa6;
-    }
-    .topbar-left { display:flex; align-items:center; gap:12px; }
-    .topbar-right { display:flex; align-items:center; gap:14px; }
-    .topbar img { height:40px; cursor:pointer; }
-    body { font-family: 'Kosugi Maru', sans-serif; background:#cce7e8; color:#1e2f30; margin:0; }
-    .container{max-width:980px;margin:40px auto;padding:20px}
-    .card{background:#76939b;border-radius:16px;padding:20px;color:#eef7f6}
-    .heading{font-size:1.6rem;font-weight:bold;margin-bottom:12px}
-    .small{font-size:.9rem;color:#eaf7f6}
-    .quiz-area{display:flex;gap:20px;align-items:flex-start;margin-top:18px}
-    .left{flex:1}
-    .right{width:320px;flex:0 0 auto}
-    .kana-char{font-size:140px;text-align:center;margin:18px 0}
-    .question-box{background:#2f6f73;padding:14px;border-radius:12px}
-    .choices{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-    .choice{background:#eaf7f6;color:#274043;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left}
-    .choice.correct{outline:3px solid #6ee06e}
-    .choice.wrong{opacity:.5}
-    .btn{background:#ffd24a;border:none;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:bold}
-    .progress-track{background:#d8eae9;border-radius:12px;height:18px;overflow:hidden;margin-top:10px}
-    .fill{height:100%;background:linear-gradient(90deg,#60a6a9,#2f6f73);width:0%;transition:width .4s}
-    .label{margin-top:6px;text-align:right;color:#eaf7f6;font-weight:bold}
-    .stat{background:#55767d;padding:12px;border-radius:10px;text-align:center}
-    .muted{font-size:.85rem;color:#daf3ef;margin-top:6px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kana Quiz — NihonGo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+
+<style>
+body{margin:0;font-family:'Kosugi Maru',sans-serif;background:#cce7e8;color:#1e2f30}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:#7aa5a8;border-bottom:4px solid #4d7d86}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-left img{height:52px}
+.header-text{display:flex;flex-direction:column;line-height:1.1}
+.header-text .title{font-size:1.6rem;font-weight:800;color:#fff}
+.header-text .subtitle{font-size:.85rem;color:#eaf5f6}
+.topbar-right{display:flex;gap:14px}
+.topbar-right img{height:58px;cursor:pointer}
+
+.container{max-width:980px;margin:40px auto;padding:20px}
+.card{background:#76939b;border-radius:16px;padding:20px;color:#eef7f6}
+.quiz-area{display:flex;gap:20px}
+.left{flex:1}
+.right{width:320px}
+.question-box{background:#2f6f73;padding:16px;border-radius:14px}
+.kana-char{font-size:140px;text-align:center;margin:18px 0}
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{background:#eaf7f6;color:#274043;padding:10px;border-radius:10px;border:none;cursor:pointer}
+.choice.correct{outline:3px solid #6ee06e}
+.choice.wrong{opacity:.5}
+.btn{background:#ffd24a;border:none;border-radius:10px;padding:10px 14px;font-weight:bold}
+.stat{background:#55767d;padding:12px;border-radius:12px;text-align:center}
+.progress-track{background:#d8eae9;border-radius:12px;height:18px;overflow:hidden;margin-top:10px}
+.fill{height:100%;background:linear-gradient(90deg,#60a6a9,#2f6f73);width:0%}
+.label{margin-top:6px;font-weight:bold;text-align:right}
+</style>
 </head>
 
 <body>
 
-<!-- TOP BAR: home on left, icons on right -->
-<div class="topbar" role="navigation" aria-label="topbar">
+<div class="topbar">
   <div class="topbar-left">
-    <a href="dashboard.php" title="Back to dashboard">
-      <img src="images/home.png" alt="Home">
-    </a>
+    <a href="dashboard.php"><img src="images/home.png"></a>
+    <div class="header-text">
+      <div class="title">Quick quiz</div>
+      <div class="subtitle">Verify kana recognition</div>
+    </div>
   </div>
-
-  <div class="topbar-right" aria-hidden="false">
-    <img src="images/exit.png" alt="exit" id="exitBtn" title="Log out">
-    <img src="images/setting.png" alt="gear" id="settingsBtn" title="Settings">
-    <img src="images/profile.png" alt="profile" id="profileBtn" title="Profile">
+  <div class="topbar-right">
+    <img src="images/exit.png" id="exitBtn">
+    <img src="images/setting.png" id="settingsBtn">
+    <img src="images/profile.png" id="profileBtn">
   </div>
 </div>
 
 <div class="container">
-  <div class="card">
-    <div class="heading">Quick quiz — verify kana recognition</div>
-    <div class="small">Correct answers mark that kana as <strong>Mastered</strong> and will count toward your "<em>My progress</em>" total. When you finish the quiz we also increment today's daily quiz counter.</div>
+<div class="card">
+<div class="quiz-area">
 
-    <div class="quiz-area">
-      <div class="left">
-        <div class="question-box">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>Question <span id="qIndex">1</span>/<span id="qTotal">10</span></div>
-            <div class="small" id="scoreText">Score: 0</div>
-          </div>
-
-          <div id="kanaChar" class="kana-char" aria-live="polite">あ</div>
-
-          <div class="choices" id="choices" role="list"></div>
-
-          <div style="display:flex;justify-content:space-between;margin-top:14px">
-            <button id="skipBtn" class="btn" style="background:#2f6f73;color:#eaf7f6">Skip</button>
-            <button id="nextBtn" class="btn">Next</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="right">
-        <div class="stat">
-          <div style="font-size:1.1rem;font-weight:bold" id="progressTitle">Script progress</div>
-          <div style="font-size:2.4rem;margin-top:6px" id="typeCount"><?= $hiraCount ?>/46</div>
-          <div class="muted" id="typePct"><?= $hiraPct ?>%</div>
-
-          <div style="margin-top:12px">
-            <div class="progress-track"><div id="typeFill" class="fill" style="width:<?= $hiraPct ?>%"></div></div>
-            <div class="label" id="typeLabelText"><?= $hiraCount ?>/46 — <?= $hiraPct ?>%</div>
-          </div>
-
-          <div class="muted" style="margin-top:8px">Correct answers will set mastery for the kana.</div>
-        </div>
-      </div>
-    </div>
-
+<div class="left">
+<div class="question-box">
+  <div style="display:flex;justify-content:space-between">
+    <div>Question <span id="qIndex">1</span>/<span id="qTotal">10</span></div>
+    <div id="scoreText">Score: 0</div>
   </div>
+
+  <div id="kanaChar" class="kana-char"></div>
+  <div id="choices" class="choices"></div>
+
+  <div style="display:flex;justify-content:space-between;margin-top:14px">
+    <button id="skipBtn" class="btn" style="background:#2f6f73;color:#fff">Skip</button>
+    <button id="nextBtn" class="btn">Next</button>
+  </div>
+</div>
+</div>
+
+<div class="right">
+<div class="stat">
+  <div id="progressTitle"></div>
+  <div id="typeCount"></div>
+  <div id="typePct"></div>
+  <div class="progress-track"><div id="typeFill" class="fill"></div></div>
+  <div class="label" id="typeLabelText"></div>
+</div>
+</div>
+
+</div>
+</div>
 </div>
 
 <script>
-/* ---------- full kana lists extracted from your provided pages ---------- */
-
-/* We'll build flat arrays from your page-style data (keeps layout identical to your uploading style) */
 const hiraPages = [
   [
     ["", "~a","~i","~u","~e","~o"],
@@ -188,224 +177,113 @@ function flattenPages(pages, script) {
 const hiraData = flattenPages(hiraPages, 'hiragana');
 const kataData = flattenPages(kataPages, 'katakana');
 
-/* ---------- seeded rng (so daily selection is deterministic) ----------
-   We'll seed from today's date (YYYY-MM-DD) so the same quiz set is used for everyone each day.
-*/
-function xfnv1a(str) { // hash -> 32-bit
-  let h = 2166136261 >>> 0;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-function mulberry32(a) {
-  return function() {
-    a |= 0; a = a + 0x6D2B79F5 | 0;
-    let t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
-}
-function seededShuffle(arr, seedStr) {
-  const seed = xfnv1a(seedStr);
-  const rand = mulberry32(seed);
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+const pool = [...hiraData, ...kataData];
 
-/* -------------- configuration -------------- */
-// mixed pool
-const mixedPool = [...hiraData, ...kataData];
-
-// daily seed: date only
-const today = new Date().toISOString().slice(0,10); // YYYY-MM-DD
-const seededPool = seededShuffle(mixedPool.slice(), today); // deterministic per day
-
-const totalQuestions = 10; // number of questions per quiz
-let quizList = []; // final quiz items
+let quiz = [];
 let current = 0;
 let score = 0;
-let answeredThis = false;
+let answered = false;
 
-// inject initial counts from PHP (use let so we can update them later)
-let initialHiraCount = <?= json_encode($hiraCount) ?>;
-let initialKataCount = <?= json_encode($kataCount) ?>;
+let hiraCount = <?= $hiraCount ?>;
+let kataCount = <?= $kataCount ?>;
 
-/* ------------------ helpers ------------------ */
-function shuffleWithSeedless(arr) { // small local shuffle for choices
-  for (let i = arr.length-1; i>0; i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]] = [arr[j],arr[i]];
-  }
-  return arr;
-}
-function isKatakana(ch) {
-  if (!ch) return false;
-  const code = ch.charCodeAt(0);
-  return (code >= 0x30A0 && code <= 0x30FF); // Katakana block
-}
-function isHiragana(ch) {
-  if (!ch) return false;
-  const code = ch.charCodeAt(0);
-  return (code >= 0x3040 && code <= 0x309F); // Hiragana block
+function updatePanel(script) {
+  const count = script === 'katakana' ? kataCount : hiraCount;
+  const pct = Math.round((count / 46) * 100);
+
+  progressTitle.textContent =
+    script === 'katakana' ? 'Katakana progress' : 'Hiragana progress';
+
+  typeCount.textContent = `${count}/46`;
+  typePct.textContent = `${pct}%`;
+  typeLabelText.textContent = `${count}/46 — ${pct}%`;
+  typeFill.style.width = pct + '%';
 }
 
-/* Build quizList: deterministic daily selection (seededPool) */
 function buildQuiz() {
-  const take = Math.min(totalQuestions, seededPool.length);
-  quizList = seededPool.slice(0, take).map(item => {
-    // build 3 distractors from same script (prefer same script for plausible choices)
-    const sameScriptPool = (item.script === 'hiragana') ? hiraData : kataData;
-    const otherPool = sameScriptPool.filter(p => p.kana !== item.kana);
-    shuffleWithSeedless(otherPool);
-    const distractors = [];
-    for (let i = 0; i < 3 && i < otherPool.length; i++) distractors.push(otherPool[i].romaji);
-    const choices = shuffleWithSeedless([item.romaji, ...distractors]);
-    return { kana: item.kana, romaji: item.romaji, script: item.script, choices };
+  quiz = pool.sort(() => 0.5 - Math.random()).slice(0, 10).map(q => {
+    const src = q.script === 'hiragana' ? hiraData : kataData;
+    const choices = [q.romaji,
+      ...src.filter(x => x.kana !== q.kana).slice(0, 3).map(x => x.romaji)
+    ].sort(() => 0.5 - Math.random());
+
+    return { ...q, choices };
   });
-  document.getElementById('qTotal').textContent = quizList.length;
+  qTotal.textContent = quiz.length;
 }
 
-/* Render question & update right-side progress for this script */
-function renderQuestion() {
-  const q = quizList[current];
-  document.getElementById('qIndex').textContent = current + 1;
-  document.getElementById('kanaChar').textContent = q.kana;
-  document.getElementById('scoreText').textContent = `Score: ${score}`;
-  const choicesEl = document.getElementById('choices');
-  choicesEl.innerHTML = '';
+function render() {
+  const q = quiz[current];
+  qIndex.textContent = current + 1;
+  kanaChar.textContent = q.kana;
+  scoreText.textContent = `Score: ${score}`;
+  updatePanel(q.script);
 
+  choices.innerHTML = '';
   q.choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.className = 'choice';
-    btn.type = 'button';
     btn.textContent = choice;
-    btn.dataset.val = choice;
-    btn.addEventListener('click', () => handleChoice(btn, q));
-    choicesEl.appendChild(btn);
+    btn.onclick = () => answer(btn, q);
+    choices.appendChild(btn);
   });
-
-  // update right panel to show script-specific progress
-  if (q.script === 'katakana') {
-    document.getElementById('progressTitle').textContent = 'Katakana progress';
-    updateRightPanel(initialKataCount);
-  } else {
-    document.getElementById('progressTitle').textContent = 'Hiragana progress';
-    updateRightPanel(initialHiraCount);
-  }
 }
 
-/* Update right panel UI given a numeric count */
-function updateRightPanel(count) {
-  const capped = Math.min(46, parseInt(count) || 0);
-  const pct = Math.round((capped/46)*100);
-  document.getElementById('typeCount').textContent = `${capped}/46`;
-  document.getElementById('typePct').textContent = `${pct}%`;
-  document.getElementById('typeLabelText').textContent = `${capped}/46 — ${pct}%`;
-  document.getElementById('typeFill').style.width = pct + '%';
-}
+function answer(btn, q) {
+  if (answered) return;
+  answered = true;
 
-/* handle choice click */
-function handleChoice(btn, q) {
-  if (answeredThis) return; // prevent double click
-  answeredThis = true;
-  const val = btn.dataset.val;
-  const correct = val === q.romaji;
-  if (correct) {
+  if (btn.textContent === q.romaji) {
     btn.classList.add('correct');
     score++;
-    // determine kana type
-    const kanaType = q.script === 'katakana' ? 'katakana' : 'hiragana';
-    // call server to mark this kana as mastered
+
     fetch('php/save_progress.php', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ kana: q.kana, type: kanaType, action: 'master' })
+      body: JSON.stringify({ kana: q.kana, type: q.script, action: 'master' })
     })
     .then(r => r.json())
-    .then(data => {
-      // update local counters if server returned type_count for that type
-      if (data && data.type_count !== undefined) {
-        if (kanaType === 'hiragana') {
-          initialHiraCount = Math.min(46, parseInt(data.type_count) || 0);
-          if (q.script === 'hiragana') updateRightPanel(initialHiraCount);
-        } else {
-          initialKataCount = Math.min(46, parseInt(data.type_count) || 0);
-          if (q.script === 'katakana') updateRightPanel(initialKataCount);
-        }
-      }
-    }).catch(()=>{ /* ignore errors silently for now */ });
+    .then(d => {
+      if (q.script === 'hiragana') hiraCount = d.type_count;
+      else kataCount = d.type_count;
+      updatePanel(q.script);
+    });
+
   } else {
     btn.classList.add('wrong');
-    // highlight correct choice
-    const all = document.querySelectorAll('.choice');
-    all.forEach(b => {
-      if (b.dataset.val === q.romaji) b.classList.add('correct');
+    [...choices.children].forEach(b => {
+      if (b.textContent === q.romaji) b.classList.add('correct');
     });
   }
 }
 
-/* finish quiz: notify server quiz_complete and show results */
-function finishQuiz() {
-  fetch('php/save_progress.php', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ action: 'quiz_complete' })
-  })
-  .then(r => r.json())
-  .then(data => {
-    alert(`Quiz finished. You scored ${score}/${quizList.length}.`);
-    // redirect to dashboard so daily counters refresh
-    window.location.href = 'dashboard.php';
-  })
-  .catch(()=> {
-    alert(`Quiz finished. You scored ${score}/${quizList.length}. (network error)`);
-    window.location.href = 'dashboard.php';
-  });
-}
+nextBtn.onclick = () => {
+  if (!answered) return alert('Choose an answer or Skip');
+  answered = false;
+  current++;
+  if (current >= quiz.length) {
+    fetch('php/save_progress.php', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'quiz_complete' })
+    }).then(() => location.href='dashboard.php');
+    return;
+  }
+  render();
+};
 
-/* next/skip handling and initialisation */
-document.addEventListener('DOMContentLoaded', () => {
-  // topbar icon listeners
-  document.getElementById('exitBtn').addEventListener('click', () => {
-    if (!confirm('Log out?')) return;
-    window.location.href = 'php/logout.php';
-  });
-  document.getElementById('settingsBtn').addEventListener('click', () => {
-    window.location.href = 'settings.html';
-  });
-  document.getElementById('profileBtn').addEventListener('click', () => {
-    window.location.href = 'dashboard.php';
-  });
+skipBtn.onclick = () => {
+  answered = false;
+  current++;
+  current < quiz.length ? render() : location.href='dashboard.php';
+};
 
-  buildQuiz();
-  renderQuestion();
+exitBtn.onclick = () => confirm('Log out?') && (location.href='php/logout.php');
+settingsBtn.onclick = () => location.href='settings.php';
+profileBtn.onclick = () => alert('Profile view coming soon');
 
-  document.getElementById('nextBtn').addEventListener('click', () => {
-    // REQUIRE an answer before moving on. Skip is the only way to advance without answering.
-    if (!answeredThis) {
-      alert('PLEASE CHOOSE AN ANSWER (or Skip if you dont know).');
-      return;
-    }
-    // reset answered flag and advance
-    answeredThis = false;
-    current++;
-    if (current >= quizList.length) { finishQuiz(); return; }
-    renderQuestion();
-  });
-
-  document.getElementById('skipBtn').addEventListener('click', () => {
-    // skip explicitly allowed (no answer required)
-    answeredThis = false;
-    current++;
-    if (current >= quizList.length) { finishQuiz(); return; }
-    renderQuestion();
-  });
-});
+buildQuiz();
+render();
 </script>
 
 </body>

@@ -41,11 +41,20 @@ window.addEventListener("DOMContentLoaded", () => {
         <p class="subtitle">Read a collection of immersive Japanese stories!</p>
       </div>
     </div>
-    <div class="top-right">
-      <img src="images/exit.png" alt="door" id="exitBtn">
-      <img src="images/setting.png" alt="gear">
-      <img src="images/profile.png" alt="onigiri">
-    </div>
+<div class="top-right">
+  <a href="php/logout.php" title="Logout">
+    <img src="images/exit.png" alt="logout">
+  </a>
+
+  <a href="settings.php" title="Settings">
+    <img src="images/setting.png" alt="settings">
+  </a>
+
+  <a href="dashboard.php" title="Profile">
+    <img src="images/profile.png" alt="profile">
+  </a>
+</div>
+
   </header>
 
   <!-- STORY WRAPPER -->
@@ -92,9 +101,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
 <script>
 // LOGOUT
-document.getElementById("exitBtn").addEventListener("click", () => {
-  if (!confirm("Log out?")) return;
-  window.location.href = "php/logout.php";
+document.getElementById('exitBtn').addEventListener('click', () => {
+  if (!confirm('Log out?')) return;
+  window.location.href = 'php/logout.php';
+});
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  window.location.href = 'settings.php';
+});
+document.getElementById('profileBtn').addEventListener('click', () => {
+  window.location.href = 'dashboard.php';
 });
 </script>
 

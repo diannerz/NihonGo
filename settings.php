@@ -41,23 +41,39 @@ $avatar = $profile['avatar_url'] ?? '';
       min-height: 100vh;
     }
 
-    .avatar-box {
+    /* SETTINGS PAGE COLUMN BALANCE */
+.profile-panel {
+  align-items: flex-start;
+}
+
+.left-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+#avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-box {
   width: 180px;
   height: 180px;
   border-radius: 14px;
   background: rgba(255,255,255,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
   overflow: hidden;
+  border: 5px solid #5b7f7c; /* ← MOVE BORDER HERE */
 }
 
-.avatar-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 
     /* ✅ FIX 1: topbar matches dashboard, icons properly sized */
@@ -258,10 +274,10 @@ $avatar = $profile['avatar_url'] ?? '';
   </div>
 
   <!-- ✅ FIXED CENTERED PANEL -->
-  <main>
+ <main>
   <div class="profile-panel">
 
-    <!-- LEFT -->
+    <!-- LEFT COLUMN -->
     <div class="left-col">
 
       <!-- DISPLAY NAME -->
@@ -274,37 +290,39 @@ $avatar = $profile['avatar_url'] ?? '';
         <span class="save-btn" id="saveName">Save</span>
       </div>
 
-      <!-- BIO -->
-<div class="panel-title" style="margin-top:20px;">Profile Info</div>
-<label class="bio-label">Bio</label>
+      <!-- PROFILE INFO -->
+      <div class="panel-title" style="margin-top:20px;">Profile Info</div>
+      <label class="bio-label">Bio</label>
 
-<div class="bio-box" id="bioText" contenteditable="false">
-  <?= htmlspecialchars($bio) ?>
-</div>
+      <div class="bio-box" id="bioText" contenteditable="false">
+        <?= htmlspecialchars($bio) ?>
+      </div>
 
-<div class="small-actions">
-  <span class="edit-btn" id="editBio">Edit</span>
-  <span class="save-btn" id="saveBio">Save</span>
-</div>
+      <div class="small-actions">
+        <span class="edit-btn" id="editBio">Edit</span>
+        <span class="save-btn" id="saveBio">Save</span>
+      </div>
 
-
-    <!-- AVATAR -->
-   <div class="right-col">
-  <div class="panel-title">Avatar</div>
-
-  <div class="avatar-wrap">
-    <div class="avatar-box" id="avatarBox">
-      <?php if ($avatar): ?>
-        <img id="avatarImg" src="<?= htmlspecialchars($avatar) ?>" alt="avatar">
-      <?php else: ?>
-        <span>No Avatar</span>
-      <?php endif; ?>
     </div>
-  </div>
 
-  <a class="change-avatar" id="changeAvatar">Click to change your avatar</a>
-</div>
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+      <div class="panel-title">Avatar</div>
 
+      <div class="avatar-wrap">
+        <div class="avatar-box" id="avatarBox">
+          <?php if ($avatar): ?>
+            <img id="avatarImg" src="<?= htmlspecialchars($avatar) ?>" alt="avatar">
+          <?php else: ?>
+            <span>No Avatar</span>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <a class="change-avatar" id="changeAvatar">
+        Click to change your avatar
+      </a>
+    </div>
 
   </div>
 </main>
