@@ -76,8 +76,8 @@ body{margin:0;font-family:'Kosugi Maru',sans-serif;background:#cce7e8;color:#1e2
   </div>
   <div class="topbar-right">
     <img src="images/exit.png" id="exitBtn">
-    <img src="images/setting.png" id="settingsBtn">
-    <img src="images/profile.png" id="profileBtn">
+    <img src="images/profile.png" id="settingsBtn">
+    <img src="images/donations.png" id="profileBtn">
   </div>
 </div>
 

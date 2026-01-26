@@ -239,8 +239,8 @@ if (!$user) {
 
     <div class="top-right">
       <img src="/NihonGo/images/exit.png" alt="Exit" id="exitBtn" style="height:50px;">
-      <img src="/NihonGo/images/setting.png" alt="Settings" id="settingsBtn" style="height:50px;">
-      <img src="/NihonGo/images/profile.png" alt="Profile" id="profileBtn" style="height:50px;">
+      <img src="/NihonGo/images/Profile.png" alt="Settings" id="settingsBtn" style="height:50px;">
+      <img src="/NihonGo/images/donations.png" alt="Profile" id="profileBtn" style="height:50px;">
     </div>
   </div>
 
@@ -652,10 +652,10 @@ document.getElementById('exitBtn').addEventListener('click', () => {
   window.location.href = 'php/logout.php';
 });
 document.getElementById('settingsBtn').addEventListener('click', () => {
-  window.location.href = 'settings.html';
+  window.location.href = 'settings.php';
 });
 document.getElementById('profileBtn').addEventListener('click', () => {
-  window.location.href = 'dashboard.php';
+  window.location.href = 'donation.php';
 });
 
 /* initial load - fetch data from database then display */

@@ -121,9 +121,9 @@ $kataPct = round(($kataCount / 46) * 100);
   <main class="main">
     <div class="topbar">
       <img src="images/exit.png" alt="exit" id="exitBtn">
-      <img src="images/setting.png" alt="gear" id="settingsBtn">
+      <img src="images/profile.png" alt="gear" id="settingsBtn">
  <a href="donation.php">
-    <img src="images/profile.png" alt="Donate" title="Donate" id="profileBtn">
+    <img src="images/donations.png" alt="Donate" title="Donate" id="profileBtn">
 </a>
 
     </div>

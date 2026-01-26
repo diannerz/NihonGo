@@ -18,6 +18,22 @@ $profile = $stmt->fetch(PDO::FETCH_ASSOC);
 $displayName = $profile['display_name'] ?: $profile['username'];
 $bio = $profile['bio'] ?? '';
 $avatar = $profile['avatar_url'] ?? '';
+
+// Get donation stats
+$donationStmt = $pdo->prepare("
+    SELECT 
+        COUNT(*) as donation_count,
+        SUM(amount) as total_donated,
+        MAX(donation_date) as last_donation
+    FROM donations
+    WHERE user_id = :id
+");
+$donationStmt->execute([':id' => $user['id']]);
+$donations = $donationStmt->fetch(PDO::FETCH_ASSOC);
+
+$donationCount = $donations['donation_count'] ?? 0;
+$totalDonated = $donations['total_donated'] ? floatval($donations['total_donated']) : 0;
+$lastDonation = $donations['last_donation'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -26,57 +42,24 @@ $avatar = $profile['avatar_url'] ?? '';
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NihonGo — Profile Settings</title>
+  <title>NihonGo — Profile</title>
 
   <link rel="stylesheet" href="styles.css">
 
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+
   <style>
     body {
-      background-color: #d7f9f6;
-      font-family: 'Poppins', sans-serif;
-      color: #1d2f2f;
+      background-color: #cce7e8;
+      font-family: 'Kosugi Maru', sans-serif;
+      color: #1e2f30;
       margin: 0;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
-    /* SETTINGS PAGE COLUMN BALANCE */
-.profile-panel {
-  align-items: flex-start;
-}
-
-.left-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.right-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-#avatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.avatar-box {
-  width: 180px;
-  height: 180px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.25);
-  overflow: hidden;
-  border: 5px solid #5b7f7c; /* ← MOVE BORDER HERE */
-}
-
-
-
-    /* ✅ FIX 1: topbar matches dashboard, icons properly sized */
+    /* TOPBAR */
     .topbar {
       display: flex;
       align-items: center;
@@ -125,121 +108,213 @@ $avatar = $profile['avatar_url'] ?? '';
       transform: scale(1.1);
     }
 
-    /* ✅ FIX 2: Center panel both vertically & horizontally */
+    /* MAIN CONTENT AREA */
     main {
       flex: 1;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 40px;
       box-sizing: border-box;
+      gap: 30px;
+    }
+
+    /* DONATION SUMMARY PANEL */
+    .donation-summary-panel {
+      width: 90%;
+      max-width: 1100px;
+      background: #d8eae9;
+      border-left: 4px solid #4d7d86;
+      padding: 20px 25px;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Kosugi Maru', sans-serif;
     }
 
     .profile-panel {
       width: 90%;
       max-width: 1100px;
-      background: #7a9b9a;
-      border-radius: 22px;
-      padding: 40px 50px;
+      background: #76939b;
+      border-radius: 8px;
+      padding: 30px 40px;
       display: flex;
       gap: 50px;
       align-items: flex-start;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       box-sizing: border-box;
     }
 
+    /* LEFT COLUMN - PROFILE */
     .left-col {
       flex: 2;
+      display: flex;
+      flex-direction: column;
     }
 
     .panel-title {
-      background: #35666a;
-      color: #eaf7f6;
-      padding: 8px 12px;
-      border-radius: 10px;
-      display: inline-block;
-      font-size: 1.3rem;
+      color: #1e2f30;
+      font-family: 'Kosugi Maru', sans-serif;
+      font-size: 1.1rem;
       font-weight: 700;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 6px 12px;
+      border-radius: 4px;
     }
 
     .name-box {
-      background: #5d7e81;
-      border-radius: 16px;
-      padding: 16px 22px;
-      font-size: 2rem;
+      background: #4d7d86;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 1.6rem;
       font-weight: 900;
-      color: #0c1d1d;
-      margin-bottom: 8px;
+      color: white;
+      margin-bottom: 10px;
       width: fit-content;
+      font-family: 'Kosugi Maru', sans-serif;
     }
 
     .small-actions {
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .small-actions .edit-btn,
     .small-actions .save-btn {
       margin-right: 10px;
       cursor: pointer;
-      color: #153a3b;
+      color: #d8eae9;
       text-decoration: underline;
       font-size: 0.9rem;
+      font-family: 'Kosugi Maru', sans-serif;
     }
 
     .small-actions .save-btn {
-      color: #b6cac9;
+      color: #b0c4c8;
       text-decoration: none;
     }
 
     .bio-label {
       display: block;
-      font-weight: 700;
-      color: #e4f6f5;
+      font-weight: 600;
+      color: #d8eae9;
       margin-bottom: 8px;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-family: 'Kosugi Maru', sans-serif;
     }
 
     .bio-box {
-      background: #5d7e81;
-      border-radius: 16px;
-      padding: 20px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #0c1d1d;
-      line-height: 1.4;
-      max-width: 720px;
+      background: #4d7d86;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #d8eae9;
+      line-height: 1.5;
+      max-width: 600px;
+      font-family: 'Kosugi Maru', sans-serif;
     }
 
+    /* RIGHT COLUMN - AVATAR */
     .right-col {
       flex: 1;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
     }
 
+    /* DONATION PANEL STYLES */
+    .donation-summary-title {
+      color: #1e2f30;
+      font-family: 'Kosugi Maru', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 15px 0;
+    }
+
+    .donation-summary-content {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .donation-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .donation-stat-label {
+      color: #4d7d86;
+      font-family: 'Kosugi Maru', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .donation-stat-value {
+      color: #1e2f30;
+      font-family: 'Kosugi Maru', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .donation-stat-subtext {
+      color: #76939b;
+      font-family: 'Kosugi Maru', sans-serif;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+
+    .no-donations {
+      color: #1e2f30;
+      font-family: 'Kosugi Maru', sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .no-donations a {
+      color: #4d7d86;
+      text-decoration: underline;
+    }
+
+    .no-donations a:hover {
+      color: #2c4f55;
+    }
+
+    /* AVATAR SECTION */
     .avatar-wrap {
-      background: #5d7e81;
-      padding: 16px;
-      border-radius: 16px;
+      background: #4d7d86;
+      padding: 12px;
+      border-radius: 6px;
       display: inline-block;
     }
 
     #avatarImg {
-      width: 180px;
-      height: 180px;
-      border-radius: 14px;
+      width: 150px;
+      height: 150px;
+      border-radius: 4px;
       object-fit: cover;
-      border: 5px solid #5b7f7c;
+      border: 3px solid #76939b;
       display: block;
-      margin: 0 auto 10px auto;
     }
 
     .change-avatar {
       display: block;
       margin-top: 8px;
-      color: #0e2d2e;
+      color: #d8eae9;
       text-decoration: underline;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
+      font-size: 0.9rem;
+      text-align: center;
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+
+    .change-avatar:hover {
+      color: white;
     }
 
     @media (max-width: 900px) {
@@ -252,7 +327,7 @@ $avatar = $profile['avatar_url'] ?? '';
         width: 100%;
       }
       .name-box {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
       }
     }
   </style>
@@ -268,16 +343,41 @@ $avatar = $profile['avatar_url'] ?? '';
 
     <div class="icons">
       <img src="images/exit.png" alt="exit" id="exitIcon">
-      <img src="images/setting.png" alt="settings" id="settingsIcon">
-      <img src="images/profile.png" alt="profile" id="profileIcon">
+      <img src="images/profile.png" alt="settings" id="settingsIcon">
+      <img src="images/donations.png" alt="profile" id="profileIcon">
     </div>
   </div>
 
   <!-- ✅ FIXED CENTERED PANEL -->
  <main>
+  <!-- DONATION SUMMARY PANEL (TOP) -->
+  <div class="donation-summary-panel">
+    <h2 class="donation-summary-title">Your Donation Support</h2>
+    <div class="donation-summary-content">
+      <?php if ($donationCount > 0): ?>
+        <div class="donation-stat">
+          <span class="donation-stat-label">Total Donated</span>
+          <span class="donation-stat-value">$<?= number_format($totalDonated, 2) ?></span>
+        </div>
+        <div class="donation-stat">
+          <span class="donation-stat-label">Number of Donations</span>
+          <span class="donation-stat-value"><?= $donationCount ?></span>
+        </div>
+        <div class="donation-stat">
+          <span class="donation-stat-label">Last Donation</span>
+          <span class="donation-stat-value"><?= date('M d, Y', strtotime($lastDonation)) ?></span>
+          <span class="donation-stat-subtext"><?= date('g:i A', strtotime($lastDonation)) ?></span>
+        </div>
+      <?php else: ?>
+        <span class="no-donations">You haven't made any donations yet. <a href="donation.php">Support us today!</a></span>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <!-- PROFILE PANEL (BOTTOM) -->
   <div class="profile-panel">
 
-    <!-- LEFT COLUMN -->
+    <!-- LEFT COLUMN - PROFILE -->
     <div class="left-col">
 
       <!-- DISPLAY NAME -->
@@ -305,23 +405,26 @@ $avatar = $profile['avatar_url'] ?? '';
 
     </div>
 
-    <!-- RIGHT COLUMN -->
+    <!-- RIGHT COLUMN - AVATAR -->
     <div class="right-col">
+
+      <!-- AVATAR SECTION -->
       <div class="panel-title">Avatar</div>
 
       <div class="avatar-wrap">
-        <div class="avatar-box" id="avatarBox">
+        <div id="avatarBox">
           <?php if ($avatar): ?>
             <img id="avatarImg" src="<?= htmlspecialchars($avatar) ?>" alt="avatar">
           <?php else: ?>
-            <span>No Avatar</span>
+            <img id="avatarImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%234d7d86' width='150' height='150'/%3E%3C/svg%3E" alt="avatar">
           <?php endif; ?>
         </div>
       </div>
 
       <a class="change-avatar" id="changeAvatar">
-        Click to change your avatar
+        Change avatar
       </a>
+
     </div>
 
   </div>
@@ -396,12 +499,11 @@ document.getElementById('exitIcon')?.addEventListener('click', () => {
 });
 
 document.getElementById('settingsIcon')?.addEventListener('click', () => {
-  // already here, but safe
   window.location.href = '/NihonGo/settings.php';
 });
 
 document.getElementById('profileIcon')?.addEventListener('click', () => {
-  alert('Profile page coming soon.');
+  window.location.href = '/NihonGo/donation.php';
 });
 </script>
 

@@ -335,8 +335,8 @@ $totalPages = max(1, ceil($total / $limit));
       </div>
       <div class="top-right">
         <img src="images/exit.png" id="exitBtn" alt="Exit">
-        <img src="images/setting.png" id="settingsBtn" alt="Settings">
-        <img src="images/profile.png" id="profileBtn" alt="Profile">
+        <img src="images/profile.png" id="settingsBtn" alt="Settings">
+        <img src="images/donations.png" id="profileBtn" alt="Profile">
       </div>
     </div>
 

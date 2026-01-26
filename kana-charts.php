@@ -232,8 +232,8 @@ a{color:inherit;text-decoration:none}
 
   <div class="topbar-right" role="toolbar" aria-label="Topbar actions">
     <img src="/NihonGo/images/exit.png" alt="logout" title="Log out" id="exitBtn">
-    <img src="/NihonGo/images/setting.png" alt="settings" title="Settings" id="settingsBtn">
-    <img src="/NihonGo/images/profile.png" alt="profile" title="Profile" id="profileBtn">
+    <img src="/NihonGo/images/profile.png" alt="settings" title="Settings" id="settingsBtn">
+    <img src="/NihonGo/images/donations.png" alt="profile" title="Profile" id="profileBtn">
   </div>
 </div>
 
@@ -390,7 +390,7 @@ document.getElementById('settingsBtn').addEventListener('click', () => {
   window.location.href = 'settings.php';
 });
 document.getElementById('profileBtn').addEventListener('click', () => {
-  window.location.href = 'dashboard.php';
+  window.location.href = 'donation.php';
 });
 
 render();
