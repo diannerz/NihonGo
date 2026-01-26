@@ -83,6 +83,7 @@ try {
     session_start();
     $_SESSION['user_id'] = (int)$pdo->lastInsertId();
     $_SESSION['username'] = $username;
+    $_SESSION['role'] = 'user';  // New users are always regular users
 
     echo json_encode(['success' => true]);
 

@@ -8,6 +8,12 @@ if (!$user) {
     exit;
 }
 
+// REDIRECT ADMIN TO ADMIN DASHBOARD
+if ($user && $user['role'] === 'admin') {
+    header("Location: admin/dashboard.php");
+    exit;
+}
+
 $uid = (int) $_SESSION['user_id'];
 
 // fetch today's daily progress
@@ -116,7 +122,10 @@ $kataPct = round(($kataCount / 46) * 100);
     <div class="topbar">
       <img src="images/exit.png" alt="exit" id="exitBtn">
       <img src="images/setting.png" alt="gear" id="settingsBtn">
-      <img src="images/profile.png" alt="profile">
+ <a href="donation.php">
+    <img src="images/profile.png" alt="Donate" title="Donate" id="profileBtn">
+</a>
+
     </div>
 
     <div class="content">
@@ -130,6 +139,7 @@ $kataPct = round(($kataCount / 46) * 100);
           <h2 class="ch-title">Daily Challenges</h2>
 
           <div class="challenge-list">
+
 <div class="challenge-row">
   <div class="challenge-label">Read any manga in the media page</div>
   <div class="progress-area">
@@ -165,7 +175,7 @@ $kataPct = round(($kataCount / 46) * 100);
         </div>
       </div>
 
-      <!-- My Progress (same UI but numbers are now dynamic) -->
+      <!-- My Progress -->
       <h2 class="myprogress-title">My progress</h2>
 
       <div class="progress-band">
@@ -195,6 +205,7 @@ $kataPct = round(($kataCount / 46) * 100);
 
     document.getElementById("settingsBtn").addEventListener("click", () => {
 window.location.href = "/NihonGo/settings.php";
+
 
     });
   </script>

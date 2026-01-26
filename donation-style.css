@@ -1,0 +1,215 @@
+  :root {
+    --sidebar-bg: #244e53;
+    --main-bg: #dffbf7;
+    --panel-bg: #8ea6ab;
+    --panel-inner: #91a3ad;
+    --accent-mint: #e7fbf7;
+    --text-main: #244850;
+    --white: #ffffff;
+    --shadow-soft: rgba(0, 0, 0, 0.06);
+    --gap: 20px;
+    --top-bar-height: 72px; /* Ensure topbar has consistent height */
+  }
+
+  /* ---------------- Reset & Base Styles ---------------- */
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "Yu Gothic", "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--main-bg);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Disable scrolling on the body */
+  }
+
+
+
+/* -------------------- Top Bar -------------------- */
+.topbar {
+  height: var(--top-bar-height);
+  background: #7aa5a8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 36px;
+  border-bottom: 4px solid #4d7d86;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+/* Left section: home + text */
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust gap to avoid icon overlap */
+  justify-content: flex-start; /* Align left section elements properly */
+}
+
+.top-left img {
+  width: 64px;
+  height: auto;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.header-text-inline {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.1;
+}
+
+.header-text-inline .title {
+  font-size: 1.6em;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+}
+
+.header-text-inline .subtitle {
+  font-size: 0.85em;
+  color: #eaf5f6;
+  margin-top: 2px;
+}
+
+/* Right section: door, gears, onigiri */
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: flex-end; /* Align icons to the right */
+}
+
+.top-right img {
+  width: 64px;
+  height: auto;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+
+.top-right img:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+
+
+
+
+
+
+  /* ---------------- MAIN AREA ---------------- */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding-top: var(--top-bar-height); /* Top bar height for proper spacing */
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Content Area Styling */
+  .content {
+    padding: 28px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    overflow-y: auto;
+    flex: 1;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Make space for top bar */
+  }
+
+  /* Donation Panel */
+  .donation-panel {
+    background: var(--panel-bg);
+    border-radius: 16px;
+    padding: 36px 42px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    box-shadow: 0 12px 30px var(--shadow-soft);
+    width: 80%; /* Ensure the panel takes appropriate space */
+    margin: auto; /* Center the panel */
+  }
+
+  .donation-panel h2 {
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: 16px;
+  }
+
+  /* Donation Options */
+  .donation-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .donation-option {
+    background: var(--panel-inner);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .donation-option span {
+    font-size: 1.2rem;
+  }
+
+  .donation-option button {
+    background-color: #43767c;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: auto;
+  }
+
+  .donation-option button:hover {
+    background-color: #dffbf7;
+  }
+
+  /* Footer Styling */
+  footer {
+    background-color: #7aa5a8;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    margin-top: 30px;
+    width: 105%;
+  }
+
+  /* -------------------- Responsive Styles -------------------- */
+  @media (max-width: 900px) {
+    .donation-panel {
+      width: 90%; /* Make the panel more responsive */
+    }
+
+    .donation-option button {
+      width: 100%; /* Make the donate button fill the width on mobile */
+    }
+  }
+
+

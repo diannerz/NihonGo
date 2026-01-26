@@ -300,81 +300,137 @@ if (!$user) {
   </div>
 
 <script>
-/* ---------- full kana lists extracted from your provided arrays ---------- */
 
+/* ---------- Image mappings for all kana ---------- */
+const hiraImageMap = {
+  "あ": { stroke: "hiraganaa.gif", vocabImg: "ame.png" },
+  "い": { stroke: "hiraganai.gif", vocabImg: "inu.png" },
+  "う": { stroke: "hiraganau.gif", vocabImg: "usagi.png" },
+  "え": { stroke: "hiraganae.gif", vocabImg: "enpitsu.png" },
+  "お": { stroke: "hiraganao.gif", vocabImg: "onigiri.png" },
+  "か": { stroke: "hiraganaka.gif", vocabImg: "kaban.png" },
+  "き": { stroke: "hiraganaki.gif", vocabImg: "ki.png" },
+  "く": { stroke: "hiraganaku.gif", vocabImg: "kuruma.png" },
+  "け": { stroke: "hiraganake.gif", vocabImg: "kemushi.png" },
+  "こ": { stroke: "hiraganako.gif", vocabImg: "koma.png" },
+  "さ": { stroke: "hiraganasa.gif", vocabImg: "saru.png" },
+  "し": { stroke: "hiraganashi.gif", vocabImg: "shinbun.png" },
+  "す": { stroke: "hiraganasu.gif", vocabImg: "suika.png" },
+  "せ": { stroke: "hiraganase.gif", vocabImg: "senbei.png" },
+  "そ": { stroke: "hiraganaso.gif", vocabImg: "sora.png" },
+  "た": { stroke: "hiraganata.gif", vocabImg: "tamago.png" },
+  "ち": { stroke: "hiraganachi.gif", vocabImg: "chizu.png" },
+  "つ": { stroke: "hiraganatsu.gif", vocabImg: "tsuki.png" },
+  "て": { stroke: "hiraganate.gif", vocabImg: "tegami.png" },
+  "と": { stroke: "hiraganato.gif", vocabImg: "tori.png" },
+  "な": { stroke: "hiraganana.gif", vocabImg: "namida.png" },
+  "に": { stroke: "hiraganani.gif", vocabImg: "niku.png" },
+  "ぬ": { stroke: "hiragananu.gif", vocabImg: "nuno.png" },
+  "ね": { stroke: "hiraganane.gif", vocabImg: "neko.png" },
+  "の": { stroke: "hiraganano.gif", vocabImg: "nori.png" },
+  "は": { stroke: "hiraganaha.gif", vocabImg: "hana.png" },
+  "ひ": { stroke: "hiraganahi.gif", vocabImg: "hikari.png" },
+  "ふ": { stroke: "hiraganafu.gif", vocabImg: "fune.png" },
+  "へ": { stroke: "hiraganahe.gif", vocabImg: "hebi.png" },
+  "ほ": { stroke: "hiraganaho.gif", vocabImg: "hoshi.png" },
+  "ま": { stroke: "hiraganama.gif", vocabImg: "mado.png" },
+  "み": { stroke: "hiraganami.gif", vocabImg: "mizu.png" },
+  "む": { stroke: "hiraganamu.gif", vocabImg: "mushi.png" },
+  "め": { stroke: "hiraganame.gif", vocabImg: "megane.png" },
+  "も": { stroke: "hiraganamo.gif", vocabImg: "mori.png" },
+  "や": { stroke: "hiraganaya.gif", vocabImg: "yama.png" },
+  "ゆ": { stroke: "hiraganayu.gif", vocabImg: "yuki.png" },
+  "よ": { stroke: "hiraganayo.gif", vocabImg: "yoru.png" },
+  "ら": { stroke: "hiraganara.gif", vocabImg: "raion.png" },
+  "り": { stroke: "hiraganari.gif", vocabImg: "risu.png" },
+  "る": { stroke: "hiraganaru.gif", vocabImg: "rusu.png" },
+  "れ": { stroke: "hiraganare.gif", vocabImg: "reizoko.png" },
+  "ろ": { stroke: "hiraganaro.gif", vocabImg: "rousoku.png" },
+  "わ": { stroke: "hiraganawa.gif", vocabImg: "wani.png" },
+  "を": { stroke: "hiraganawo.gif", vocabImg: "wo.png" },
+  "ん": { stroke: "hiraganan.gif", vocabImg: "hon.png" }
+};
 
+const kataImageMap = {
+  "ア": { stroke: "katakanaa.gif", vocabImg: "amerika.png" },
+  "イ": { stroke: "katakanai.gif", vocabImg: "inku.png" },
+  "ウ": { stroke: "katakanau.gif", vocabImg: "uisuki.png" },
+  "エ": { stroke: "katakanae.gif", vocabImg: "erebeta.png" },
+  "オ": { stroke: "katakanao.gif", vocabImg: "ofisu.png" },
+  "カ": { stroke: "katakanaka.gif", vocabImg: "kamera.png" },
+  "キ": { stroke: "katakanaki.gif", vocabImg: "kitchin.png" },
+  "ク": { stroke: "katakanaku.gif", vocabImg: "kurabu.png" },
+  "ケ": { stroke: "katakanake.gif", vocabImg: "keki.png" },
+  "コ": { stroke: "katakanako.gif", vocabImg: "kohi.png" },
+  "サ": { stroke: "katakanasa.gif", vocabImg: "sando.png" },
+  "シ": { stroke: "katakanashi.gif", vocabImg: "shito.png" },
+  "ス": { stroke: "katakanasu.gif", vocabImg: "supa.png" },
+  "セ": { stroke: "katakanase.gif", vocabImg: "seta.png" },
+  "ソ": { stroke: "katakanaso.gif", vocabImg: "soda.png" },
+  "タ": { stroke: "katakanata.gif", vocabImg: "takushi.png" },
+  "チ": { stroke: "katakanachi.gif", vocabImg: "cheese.png" },
+  "ツ": { stroke: "katakanatsu.gif", vocabImg: "tsua.png" },
+  "テ": { stroke: "katakanate.gif", vocabImg: "tesuto.png" },
+  "ト": { stroke: "katakanato.gif", vocabImg: "tomato.png" },
+  "ナ": { stroke: "katakanana.gif", vocabImg: "naifu.png" },
+  "ニ": { stroke: "katakanani.gif", vocabImg: "nyusu.png" },
+  "ヌ": { stroke: "katakananu.gif", vocabImg: "nudoru.png" },
+  "ネ": { stroke: "katakanane.gif", vocabImg: "netto.png" },
+  "ノ": { stroke: "katakanano.gif", vocabImg: "noto.png" },
+  "ハ": { stroke: "katakanaha.gif", vocabImg: "hanbaga.png" },
+  "ヒ": { stroke: "katakanahi.gif", vocabImg: "hiro.png" },
+  "フ": { stroke: "katakanafu.gif", vocabImg: "food.png" },
+  "ヘ": { stroke: "katakanahe.gif", vocabImg: "helmet.png" },
+  "ホ": { stroke: "katakanaho.gif", vocabImg: "hoteru.png" },
+  "マ": { stroke: "katakanama.gif", vocabImg: "masuku.png" },
+  "ミ": { stroke: "katakanami.gif", vocabImg: "miruku.png" },
+  "ム": { stroke: "katakanamu.gif", vocabImg: "mubi.png" },
+  "メ": { stroke: "katakaname.gif", vocabImg: "meru.png" },
+  "モ": { stroke: "katakanamo.gif", vocabImg: "moderu.png" },
+  "ヤ": { stroke: "katakanaya.gif", vocabImg: "yado.png" },
+  "ユ": { stroke: "katakanayu.gif", vocabImg: "yunifomu.png" },
+  "ヨ": { stroke: "katakanayo.gif", vocabImg: "yoguruto.png" },
+  "ラ": { stroke: "katakanara.gif", vocabImg: "rajio.png" },
+  "リ": { stroke: "katakanari.gif", vocabImg: "ringu.png" },
+  "ル": { stroke: "katakanaru.gif", vocabImg: "ruru.png" },
+  "レ": { stroke: "katakanare.gif", vocabImg: "remon.png" },
+  "ロ": { stroke: "katakanaro.gif", vocabImg: "robotto.png" },
+  "ワ": { stroke: "katakanawa.gif", vocabImg: "wain.png" },
+  "ヲ": { stroke: "katakanawo.gif", vocabImg: "wokka.png" },
+  "ン": { stroke: "katakanan.gif", vocabImg: "supun.png" }
+};
 
+let hiraData = [];
+let kataData = [];
 
+/* Load kana data from database and merge with image mappings */
+async function loadKanaData() {
+  try {
+    const hiraResponse = await fetch('/NihonGo/php/get_kana_data.php?type=hiragana');
+    const hiraFromDb = await hiraResponse.json();
+    hiraData = hiraFromDb.map(k => ({
+      ...k,
+      stroke: hiraImageMap[k.kana_char]?.stroke || 'placeholder.gif',
+      vocabImg: hiraImageMap[k.kana_char]?.vocabImg || 'placeholder.png',
+      kana: k.kana_char,
+      romaji: k.romaji
+    }));
 
-const hiraData = [
-  { kana: "あ", romaji: "a", mnemonic: "When the fish got stabbed by the sword, it went a!", vocab_jp: "あめ", vocab_romaji: "ame", vocab_eng: "candy / rain", stroke: "hiraganaa.gif", vocabImg: "ame.png" },
-  { kana: "い", romaji: "i", mnemonic: "Two eels swimming around each other. Eek!", vocab_jp: "いぬ", vocab_romaji: "inu", vocab_eng: "dog", stroke: "hiraganai.gif", vocabImg: "inu.png" },
-  { kana: "う", romaji: "u", mnemonic: "Just Latin U tilting left with a line on top.", vocab_jp: "うさぎ", vocab_romaji: "usagi", vocab_eng: "bunny", stroke: "hiraganau.gif", vocabImg: "usagi.png" },
-  { kana: "え", romaji: "e", mnemonic: "Looks like the number '4' rotated.", vocab_jp: "えんぴつ", vocab_romaji: "enpitsu", vocab_eng: "pencil", stroke: "hiraganae.gif", vocabImg: "enpitsu.png" },
-  { kana: "お", romaji: "o", mnemonic: "Hand holding a sword writing O.", vocab_jp: "おにぎり", vocab_romaji: "onigiri", vocab_eng: "rice ball", stroke: "hiraganao.gif", vocabImg: "onigiri.png" },
+    const kataResponse = await fetch('/NihonGo/php/get_kana_data.php?type=katakana');
+    const kataFromDb = await kataResponse.json();
+    kataData = kataFromDb.map(k => ({
+      ...k,
+      stroke: kataImageMap[k.kana_char]?.stroke || 'placeholder.gif',
+      vocabImg: kataImageMap[k.kana_char]?.vocabImg || 'placeholder.png',
+      kana: k.kana_char,
+      romaji: k.romaji
+    }));
+  } catch (error) {
+    console.error('Failed to load kana data:', error);
+  }
+}
 
-  // KA row
-  { kana: "か", romaji: "ka", mnemonic: "Arm of the K is falling down.", vocab_jp: "かばん", vocab_romaji: "kaban", vocab_eng: "bag", stroke: "hiraganaka.gif", vocabImg: "kaban.png" },
-  { kana: "き", romaji: "ki", mnemonic: "Looks like a house key.", vocab_jp: "き", vocab_romaji: "ki", vocab_eng: "tree", stroke: "hiraganaki.gif", vocabImg: "ki.png" },
-  { kana: "く", romaji: "ku", mnemonic: "Coo-coo bird mouth.", vocab_jp: "くるま", vocab_romaji: "kuruma", vocab_eng: "car", stroke: "hiraganaku.gif", vocabImg: "kuruma.png" },
-  { kana: "け", romaji: "ke", mnemonic: "Looks like a KEg.", vocab_jp: "けむし", vocab_romaji: "kemushi", vocab_eng: "caterpillar", stroke: "hiraganake.gif", vocabImg: "kemushi.png" },
-  { kana: "こ", romaji: "ko", mnemonic: "Two koi swimming in a pond.", vocab_jp: "こま", vocab_romaji: "koma", vocab_eng: "spinning top", stroke: "hiraganako.gif", vocabImg: "koma.png" },
-
-  // SA row
-  { kana: "さ", romaji: "sa", mnemonic: "Looks like a smiling monkey.", vocab_jp: "さる", vocab_romaji: "saru", vocab_eng: "monkey", stroke: "hiraganasa.gif", vocabImg: "saru.png" },
-  { kana: "し", romaji: "shi", mnemonic: "Looks like a fishing hook.", vocab_jp: "しんぶん", vocab_romaji: "shinbun", vocab_eng: "newspaper", stroke: "hiraganashi.gif", vocabImg: "shinbun.png" },
-  { kana: "す", romaji: "su", mnemonic: "Slurping noodle shape.", vocab_jp: "すいか", vocab_romaji: "suika", vocab_eng: "watermelon", stroke: "hiraganasu.gif", vocabImg: "suika.png" },
-  { kana: "せ", romaji: "se", mnemonic: "Mama setting a baby on its lap.", vocab_jp: "せんべい", vocab_romaji: "senbei", vocab_eng: "rice cracker", stroke: "hiraganase.gif", vocabImg: "senbei.png" },
-  { kana: "そ", romaji: "so", mnemonic: "SOap — motion you'd wash your belly with in zigzag.", vocab_jp: "そら", vocab_romaji: "sora", vocab_eng: "sky", stroke: "hiraganaso.gif", vocabImg: "sora.png" },
-
-  // TA row
-  { kana: "た", romaji: "ta", mnemonic: "Looks like a t with a small o.", vocab_jp: "たまご", vocab_romaji: "tamago", vocab_eng: "egg", stroke: "hiraganata.gif", vocabImg: "tamago.png" },
-  { kana: "ち", romaji: "chi", mnemonic: "Looks like the number 5.", vocab_jp: "ちず", vocab_romaji: "chizu", vocab_eng: "map", stroke: "hiraganachi.gif", vocabImg: "chizu.png" },
-  { kana: "つ", romaji: "tsu", mnemonic: "Looks like a TSUnami wave.", vocab_jp: "つき", vocab_romaji: "tsuki", vocab_eng: "moon", stroke: "hiraganatsu.gif", vocabImg: "tsuki.png" },
-  { kana: "て", romaji: "te", mnemonic: "It looks like a T.", vocab_jp: "てがみ", vocab_romaji: "tegami", vocab_eng: "letter", stroke: "hiraganate.gif", vocabImg: "tegami.png" },
-  { kana: "と", romaji: "to", mnemonic: "Your Tooth Touching your TOngue.", vocab_jp: "とり", vocab_romaji: "tori", vocab_eng: "bird", stroke: "hiraganato.gif", vocabImg: "tori.png" },
-
-  // NA row
-  { kana: "な", romaji: "na", mnemonic: "Person throwing something saying: NA, I don't need this.", vocab_jp: "なみだ", vocab_romaji: "namida", vocab_eng: "tears", stroke: "hiraganana.gif", vocabImg: "namida.png" },
-  { kana: "に", romaji: "ni", mnemonic: "Two little brothers beside older brother.", vocab_jp: "にく", vocab_romaji: "niku", vocab_eng: "meat", stroke: "hiraganani.gif", vocabImg: "niku.png" },
-  { kana: "ぬ", romaji: "nu", mnemonic: "Looks like noodles with chopsticks.", vocab_jp: "ぬの", vocab_romaji: "nuno", vocab_eng: "cloth", stroke: "hiragananu.gif", vocabImg: "nuno.png" },
-  { kana: "ね", romaji: "ne", mnemonic: "Looks like a cat stretching.", vocab_jp: "ねこ", vocab_romaji: "neko", vocab_eng: "cat", stroke: "hiraganane.gif", vocabImg: "neko.png" },
-  { kana: "の", romaji: "no", mnemonic: "Looks like NO with o inside n.", vocab_jp: "のり", vocab_romaji: "nori", vocab_eng: "seaweed", stroke: "hiraganano.gif", vocabImg: "nori.png" },
-
-  // HA row
-  { kana: "は", romaji: "ha", mnemonic: "Top looks like H, bottom like small a.", vocab_jp: "はな", vocab_romaji: "hana", vocab_eng: "flower", stroke: "hiraganaha.gif", vocabImg: "hana.png" },
-  { kana: "ひ", romaji: "hi", mnemonic: "Looks like a smile when you say hi.", vocab_jp: "ひかり", vocab_romaji: "hikari", vocab_eng: "light", stroke: "hiraganahi.gif", vocabImg: "hikari.png" },
-  { kana: "ふ", romaji: "fu", mnemonic: "Looks like someone blowing raspberries.", vocab_jp: "ふね", vocab_romaji: "fune", vocab_eng: "ship", stroke: "hiraganafu.gif", vocabImg: "fune.png" },
-  { kana: "へ", romaji: "he", mnemonic: "Looks like a heel.", vocab_jp: "へび", vocab_romaji: "hebi", vocab_eng: "snake", stroke: "hiraganahe.gif", vocabImg: "hebi.png" },
-  { kana: "ほ", romaji: "ho", mnemonic: "Flip the strokes sideways → ho.", vocab_jp: "ほし", vocab_romaji: "hoshi", vocab_eng: "star", stroke: "hiraganaho.gif", vocabImg: "hoshi.png" },
-
-  // MA row
-  { kana: "ま", romaji: "ma", mnemonic: "Looks like ho without first stroke.", vocab_jp: "まど", vocab_romaji: "mado", vocab_eng: "window", stroke: "hiraganama.gif", vocabImg: "mado.png" },
-  { kana: "み", romaji: "mi", mnemonic: "Looks like the number 21.", vocab_jp: "みず", vocab_romaji: "mizu", vocab_eng: "water", stroke: "hiraganami.gif", vocabImg: "mizu.png" },
-  { kana: "む", romaji: "mu", mnemonic: "Looks like a cow’s nose (moo).", vocab_jp: "むし", vocab_romaji: "mushi", vocab_eng: "insect", stroke: "hiraganamu.gif", vocabImg: "mushi.png" },
-  { kana: "め", romaji: "me", mnemonic: "Looks like an eye (me).", vocab_jp: "めがね", vocab_romaji: "megane", vocab_eng: "glasses", stroke: "hiraganame.gif", vocabImg: "megane.png" },
-  { kana: "も", romaji: "mo", mnemonic: "Looks like a MOp sweeping across the floor.", vocab_jp: "もり", vocab_romaji: "mori", vocab_eng: "forest", stroke: "hiraganamo.gif", vocabImg: "mori.png" },
-
-  // YA row
-  { kana: "や", romaji: "ya", mnemonic: "Looks like someone punching shouting YA!", vocab_jp: "やま", vocab_romaji: "yama", vocab_eng: "mountain", stroke: "hiraganaya.gif", vocabImg: "yama.png" },
-  { kana: "ゆ", romaji: "yu", mnemonic: "Looks like someone hugging → yu!", vocab_jp: "ゆき", vocab_romaji: "yuki", vocab_eng: "snow", stroke: "hiraganayu.gif", vocabImg: "yuki.png" },
-  { kana: "よ", romaji: "yo", mnemonic: "Looks like a YO-yo string.", vocab_jp: "よる", vocab_romaji: "yoru", vocab_eng: "night", stroke: "hiraganayo.gif", vocabImg: "yoru.png" },
-
-  // RA row
-  { kana: "ら", romaji: "ra", mnemonic: "Bowl of Ramen with spoon.", vocab_jp: "らいおん", vocab_romaji: "raion", vocab_eng: "lion", stroke: "hiraganara.gif", vocabImg: "raion.png" },
-  { kana: "り", romaji: "ri", mnemonic: "Looks like a RIVER.", vocab_jp: "りす", vocab_romaji: "risu", vocab_eng: "squirrel", stroke: "hiraganari.gif", vocabImg: "risu.png" },
-  { kana: "る", romaji: "ru", mnemonic: "Turn sideways → looks like NO. No RUles.", vocab_jp: "るす", vocab_romaji: "rusu", vocab_eng: "absence", stroke: "hiraganaru.gif", vocabImg: "rusu.png" },
-  { kana: "れ", romaji: "re", mnemonic: "A ray of sunshine.", vocab_jp: "れいぞうこ", vocab_romaji: "reizoko", vocab_eng: "fridge", stroke: "hiraganare.gif", vocabImg: "reizoko.png" },
-  { kana: "ろ", romaji: "ro", mnemonic: "Looks like RU without circle.", vocab_jp: "ろうそく", vocab_romaji: "rousoku", vocab_eng: "candle", stroke: "hiraganaro.gif", vocabImg: "rousoku.png" },
-
-  // WA row
-  { kana: "わ", romaji: "wa", mnemonic: "Looks like Wario's dumpy.", vocab_jp: "わに", vocab_romaji: "wani", vocab_eng: "crocodile", stroke: "hiraganawa.gif", vocabImg: "wani.png" },
-  { kana: "を", romaji: "wo", mnemonic: "Stickman sitting on a worm.", vocab_jp: "を", vocab_romaji: "wo", vocab_eng: "is an object particle, japanese words typically don't start with wo.", stroke: "hiraganawo.gif", vocabImg: "wo.png" },
-  { kana: "ん", romaji: "n", mnemonic: "Looks like lowercase n.", vocab_jp: "ほん", vocab_romaji: "hon", vocab_eng: "book", stroke: "hiraganan.gif", vocabImg: "hon.png" }
-];
-
-
-/* ------------------------------- helpers ------------------------------- */
+/* Helpers and initialization */
 function urlParam(name) {
   const p = new URLSearchParams(window.location.search);
   return p.get(name);
@@ -382,70 +438,11 @@ function urlParam(name) {
 
 const requestedKana = urlParam("kana");
 const typeParam = urlParam("type") || "hiragana";
-const kataData = [
-  { kana: "ア", romaji: "a", mnemonic: "Looks like an umbrella (a-mbrella).", vocab_jp: "アメリカ", vocab_romaji: "amerika", vocab_eng: "America", stroke: "katakanaa.gif", vocabImg: "amerika.png" },
-  { kana: "イ", romaji: "i", mnemonic: "Internet wires hung on a pole.", vocab_jp: "インク", vocab_romaji: "inku", vocab_eng: "ink", stroke: "katakanai.gif", vocabImg: "inku.png" },
-  { kana: "ウ", romaji: "u", mnemonic: "Latin U leaning left.", vocab_jp: "ウイスキー", vocab_romaji: "uisuki", vocab_eng: "whiskey", stroke: "katakanau.gif", vocabImg: "uisuki.png" },
-  { kana: "エ", romaji: "e", mnemonic: "Guy starting to propose then saying 'e'.", vocab_jp: "エレベーター", vocab_romaji: "erebeetaa", vocab_eng: "elevator", stroke: "katakanae.gif", vocabImg: "erebeta.png" },
-  { kana: "オ", romaji: "o", mnemonic: "Bottom looks like onigiri.", vocab_jp: "オフィス", vocab_romaji: "ofisu", vocab_eng: "office", stroke: "katakanao.gif", vocabImg: "ofisu.png" },
 
-  { kana: "カ", romaji: "ka", mnemonic: "Arm of K falling.", vocab_jp: "カメラ", vocab_romaji: "kamera", vocab_eng: "camera", stroke: "katakanaka.gif", vocabImg: "kamera.png" },
-  { kana: "キ", romaji: "ki", mnemonic: "Looks like a scar.", vocab_jp: "キッチン", vocab_romaji: "kitchin", vocab_eng: "kitchen", stroke: "katakanaki.gif", vocabImg: "kitchin.png" },
-  { kana: "ク", romaji: "ku", mnemonic: "Looks like a thumbs up.", vocab_jp: "クラブ", vocab_romaji: "kurabu", vocab_eng: "club", stroke: "katakanaku.gif", vocabImg: "kurabu.png" },
-  { kana: "ケ", romaji: "ke", mnemonic: "Rotated K.", vocab_jp: "ケーキ", vocab_romaji: "keki", vocab_eng: "cake", stroke: "katakanake.gif", vocabImg: "keki.png" },
-  { kana: "コ", romaji: "ko", mnemonic: "Broken cup.", vocab_jp: "コーヒー", vocab_romaji: "koohii", vocab_eng: "coffee", stroke: "katakanako.gif", vocabImg: "kohi.png" },
-
-  { kana: "サ", romaji: "sa", mnemonic: "See-saw.", vocab_jp: "サンド", vocab_romaji: "sando", vocab_eng: "sandwich", stroke: "katakanasa.gif", vocabImg: "sando.png" },
-  { kana: "シ", romaji: "shi", mnemonic: "Side-eyes → she → shi.", vocab_jp: "シート", vocab_romaji: "shiito", vocab_eng: "seat", stroke: "katakanashi.gif", vocabImg: "shito.png" },
-  { kana: "ス", romaji: "su", mnemonic: "Doing a split (su-plit).", vocab_jp: "スーパー", vocab_romaji: "suupaa", vocab_eng: "supermarket", stroke: "katakanasu.gif", vocabImg: "supa.png" },
-  { kana: "セ", romaji: "se", mnemonic: "Mama setting baby.", vocab_jp: "セーター", vocab_romaji: "seetaa", vocab_eng: "sweater", stroke: "katakanase.gif", vocabImg: "seta.png" },
-  { kana: "ソ", romaji: "so", mnemonic: "She who lost an eye (so).", vocab_jp: "ソーダ", vocab_romaji: "sooda", vocab_eng: "soda", stroke: "katakanaso.gif", vocabImg: "soda.png" },
-
-  { kana: "タ", romaji: "ta", mnemonic: "Little t + big A = TA.", vocab_jp: "タクシー", vocab_romaji: "takushii", vocab_eng: "taxi", stroke: "katakanata.gif", vocabImg: "takushi.png" },
-  { kana: "チ", romaji: "chi", mnemonic: "Cheating on exam → chi.", vocab_jp: "チーズ", vocab_romaji: "chiizu", vocab_eng: "cheese", stroke: "katakanachi.gif", vocabImg: "cheese.png" },
-  { kana: "ツ", romaji: "tsu", mnemonic: "Eyes looking at you → tsu!", vocab_jp: "ツアー", vocab_romaji: "tsuaa", vocab_eng: "tour", stroke: "katakanatsu.gif", vocabImg: "tsua.png" },
-  { kana: "テ", romaji: "te", mnemonic: "Telephone pole.", vocab_jp: "テスト", vocab_romaji: "tesuto", vocab_eng: "test", stroke: "katakanate.gif", vocabImg: "tesuto.png" },
-  { kana: "ト", romaji: "to", mnemonic: "Lowercase t pointing right.", vocab_jp: "トマト", vocab_romaji: "tomato", vocab_eng: "tomato", stroke: "katakanato.gif", vocabImg: "tomato.png" },
-
-  { kana: "ナ", romaji: "na", mnemonic: "Looks like T… NA-h almost.", vocab_jp: "ナイフ", vocab_romaji: "naifu", vocab_eng: "knife", stroke: "katakanana.gif", vocabImg: "naifu.png" },
-  { kana: "ニ", romaji: "ni", mnemonic: "Two strokes → ni (two).", vocab_jp: "ニュース", vocab_romaji: "nyuusu", vocab_eng: "news", stroke: "katakanani.gif", vocabImg: "nyusu.png" },
-  { kana: "ヌ", romaji: "nu", mnemonic: "New sword with tassel.", vocab_jp: "ヌードル", vocab_romaji: "nuudoru", vocab_eng: "noodles", stroke: "katakananu.gif", vocabImg: "nudoru.png" },
-  { kana: "ネ", romaji: "ne", mnemonic: "Looks like necktie.", vocab_jp: "ネット", vocab_romaji: "netto", vocab_eng: "internet", stroke: "katakanane.gif", vocabImg: "netto.png" },
-  { kana: "ノ", romaji: "no", mnemonic: "Person refusing… NO.", vocab_jp: "ノート", vocab_romaji: "nooto", vocab_eng: "notebook", stroke: "katakanano.gif", vocabImg: "noto.png" },
-
-  { kana: "ハ", romaji: "ha", mnemonic: "Manga 'ha ha ha!' lines.", vocab_jp: "ハンバーガー", vocab_romaji: "hanbaagaa", vocab_eng: "hamburger", stroke: "katakanaha.gif", vocabImg: "hanbaga.png" },
-  { kana: "ヒ", romaji: "hi", mnemonic: "Person waving Hi!", vocab_jp: "ヒーロー", vocab_romaji: "hiiro", vocab_eng: "hero", stroke: "katakanahi.gif", vocabImg: "hiro.png" },
-  { kana: "フ", romaji: "fu", mnemonic: "Half smiling 'fufufu'", vocab_jp: "フード", vocab_romaji: "fuudo", vocab_eng: "food", stroke: "katakanafu.gif", vocabImg: "food.png" },
-  { kana: "ヘ", romaji: "he", mnemonic: "Hanging off cliff yelling HELP!", vocab_jp: "ヘルメット", vocab_romaji: "herumetto", vocab_eng: "helmet", stroke: "katakanahe.gif", vocabImg: "helmet.png" },
-  { kana: "ホ", romaji: "ho", mnemonic: "Holy cross.", vocab_jp: "ホテル", vocab_romaji: "hoteru", vocab_eng: "hotel", stroke: "katakanaho.gif", vocabImg: "hoteru.png" },
-
-  { kana: "マ", romaji: "ma", mnemonic: "Side of a breast → mama.", vocab_jp: "マスク", vocab_romaji: "masuku", vocab_eng: "mask", stroke: "katakanama.gif", vocabImg: "masuku.png" },
-  { kana: "ミ", romaji: "mi", mnemonic: "Do re mi → 3 strokes.", vocab_jp: "ミルク", vocab_romaji: "miruku", vocab_eng: "milk", stroke: "katakanami.gif", vocabImg: "miruku.png" },
-  { kana: "ム", romaji: "mu", mnemonic: "Flexing muscles.", vocab_jp: "ムービー", vocab_romaji: "muubii", vocab_eng: "movie", stroke: "katakanamu.gif", vocabImg: "mubi.png" },
-  { kana: "メ", romaji: "me", mnemonic: "Metal sword.", vocab_jp: "メール", vocab_romaji: "meeru", vocab_eng: "mail", stroke: "katakaname.gif", vocabImg: "meru.png" },
-  { kana: "モ", romaji: "mo", mnemonic: "Ni + mo = finding ni mo.", vocab_jp: "モデル", vocab_romaji: "moderu", vocab_eng: "model", stroke: "katakanamo.gif", vocabImg: "moderu.png" },
-
-  { kana: "ヤ", romaji: "ya", mnemonic: "Looks like や.", vocab_jp: "ヤード", vocab_romaji: "yaado", vocab_eng: "yard", stroke: "katakanaya.gif", vocabImg: "yado.png" },
-  { kana: "ユ", romaji: "yu", mnemonic: "Number one → yu are number one.", vocab_jp: "ユニフォーム", vocab_romaji: "yunifo-mu", vocab_eng: "uniform", stroke: "katakanayu.gif", vocabImg: "yunifomu.png" },
-  { kana: "ヨ", romaji: "yo", mnemonic: "'Yo, this is backwards E!'", vocab_jp: "ヨーグルト", vocab_romaji: "yooguruto", vocab_eng: "yogurt", stroke: "katakanayo.gif", vocabImg: "yoguruto.png" },
-
-  { kana: "ラ", romaji: "ra", mnemonic: "Ramen bowl.", vocab_jp: "ラジオ", vocab_romaji: "rajio", vocab_eng: "radio", stroke: "katakanara.gif", vocabImg: "rajio.png" },
-  { kana: "リ", romaji: "ri", mnemonic: "Richard’s right ear.", vocab_jp: "リング", vocab_romaji: "ringu", vocab_eng: "ring", stroke: "katakanari.gif", vocabImg: "ringu.png" },
-  { kana: "ル", romaji: "ru", mnemonic: "Road → ru.", vocab_jp: "ルール", vocab_romaji: "ruuru", vocab_eng: "rule", stroke: "katakanaru.gif", vocabImg: "ruru.png" },
-  { kana: "レ", romaji: "re", mnemonic: "L of lemon.", vocab_jp: "レモン", vocab_romaji: "remon", vocab_eng: "lemon", stroke: "katakanare.gif", vocabImg: "remon.png" },
-  { kana: "ロ", romaji: "ro", mnemonic: "Robot head.", vocab_jp: "ロボット", vocab_romaji: "robotto", vocab_eng: "robot", stroke: "katakanaro.gif", vocabImg: "robotto.png" },
-
-  { kana: "ワ", romaji: "wa", mnemonic: "Water faucet → wa.", vocab_jp: "ワイン", vocab_romaji: "wain", vocab_eng: "wine", stroke: "katakanawa.gif", vocabImg: "wain.png" },
-  { kana: "ヲ", romaji: "wo", mnemonic: "Rotate → w → whoa!", vocab_jp: "ウォッカ", vocab_romaji: "wokka", vocab_eng: "vodka", stroke: "katakanawo.gif", vocabImg: "wokka.png" },
-
-  { kana: "ン", romaji: "n", mnemonic: "Yawning person lying down.", vocab_jp: "スプーン", vocab_romaji: "supuun", vocab_eng: "spoon", stroke: "katakanan.gif", vocabImg: "supun.png" }
-];
-
-const activeData = (typeParam === "katakana") ? kataData : hiraData;
+let activeData = [];
 
 // find the requested index or default to 0
-let currentIndex = activeData.findIndex(k => k.kana === requestedKana);
-if (currentIndex === -1) currentIndex = 0;
+let currentIndex = 0;
 
 /* local state for current item and master info */
 let currentKanaObj = null;
@@ -592,67 +589,13 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   currentIndex = (currentIndex + 1) % activeData.length;
   displayKana(currentIndex);
 });
+
 document.getElementById("prevBtn").addEventListener("click", () => {
   currentIndex = (currentIndex - 1 + activeData.length) % activeData.length;
   displayKana(currentIndex);
 });
 
-/* master/unmaster toggle */
-document.getElementById("masterBtn").onclick = () => {
-  if (!currentKanaObj) return;
-
-  const kana = currentKanaObj.kana;
-  const cacheKey = `${kana}|${typeParam}`;
-  const newAction = (currentMastery === 2) ? "unmaster" : "master";
-
-  // 🔵 Optimistically update UI instantly
-  currentMastery = (newAction === "master" ? 2 : 0);
-
-  if (currentMastery === 2) {
-    masteredCache[cacheKey] = true;
-  } else {
-    delete masteredCache[cacheKey];
-  }
-
-  setStarState(currentMastery === 2);
-
-  // 🔵 Send request to server
-  fetch("php/save_progress.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: newAction,
-      kana: kana,
-      type: typeParam
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data && data.success) {
-      currentMastery = data.mastery_level;
-
-      if (currentMastery === 2) {
-        masteredCache[cacheKey] = true;
-      } else {
-        delete masteredCache[cacheKey];
-      }
-
-      setStarState(currentMastery === 2);
-
-      if (typeof data.type_count !== "undefined") {
-        updateRightPanel(data.type_count);
-      }
-    } else {
-      alert("Server error updating mastery.");
-    }
-  })
-  .catch(() => {
-    alert("Network error updating mastery.");
-  });
-};
-
-
-/* master/unmaster toggle */
+/* master/unmaster toggle - SINGLE HANDLER */
 document.getElementById("masterBtn").onclick = () => {
   if (!currentKanaObj) return;
 
@@ -703,8 +646,6 @@ document.getElementById("masterBtn").onclick = () => {
   });
 };
 
-
-
 /* topbar icon wiring */
 document.getElementById('exitBtn').addEventListener('click', () => {
   if (!confirm('Log out?')) return;
@@ -717,8 +658,17 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   window.location.href = 'dashboard.php';
 });
 
-/* initial load */
-displayKana(currentIndex);
+/* initial load - fetch data from database then display */
+(async () => {
+  await loadKanaData();
+  activeData = (typeParam === "katakana") ? kataData : hiraData;
+  
+  // find the requested index or default to 0
+  currentIndex = activeData.findIndex(k => k.kana === requestedKana);
+  if (currentIndex === -1) currentIndex = 0;
+  
+  displayKana(currentIndex);
+})();
 </script>
 </body>
 </html>

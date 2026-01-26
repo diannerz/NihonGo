@@ -45,12 +45,12 @@ body{margin:0;font-family:'Kosugi Maru',sans-serif;background:#cce7e8;color:#1e2
 .topbar-right{display:flex;gap:14px}
 .topbar-right img{height:58px;cursor:pointer}
 
-.container{max-width:980px;margin:40px auto;padding:20px}
-.card{background:#76939b;border-radius:16px;padding:20px;color:#eef7f6}
-.quiz-area{display:flex;gap:20px}
+.container{max-width:1280px;margin:40px auto;padding:20px}
+.card{background:#76939b;border-radius:16px;padding:32px;color:#eef7f6}
+.quiz-area{display:flex;gap:30px}
 .left{flex:1}
-.right{width:320px}
-.question-box{background:#2f6f73;padding:16px;border-radius:14px}
+.right{width:380px}
+.question-box{background:#2f6f73;padding:28px;border-radius:14px}
 .kana-char{font-size:140px;text-align:center;margin:18px 0}
 .choices{display:flex;flex-direction:column;gap:10px}
 .choice{background:#eaf7f6;color:#274043;padding:10px;border-radius:10px;border:none;cursor:pointer}
@@ -280,7 +280,7 @@ skipBtn.onclick = () => {
 
 exitBtn.onclick = () => confirm('Log out?') && (location.href='php/logout.php');
 settingsBtn.onclick = () => location.href='settings.php';
-profileBtn.onclick = () => alert('Profile view coming soon');
+profileBtn.onclick = () => location.href = 'donation.php';
 
 buildQuiz();
 render();

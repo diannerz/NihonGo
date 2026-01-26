@@ -16,7 +16,7 @@ if (!$username || !$password) {
 }
 
 try {
-    $stmt = $pdo->prepare('SELECT id, username, password_hash FROM users WHERE username = :u');
+    $stmt = $pdo->prepare('SELECT id, username, password_hash, role FROM users WHERE username = :u');
     $stmt->execute([':u' => $username]);
     $user = $stmt->fetch();
 
@@ -41,6 +41,7 @@ if (!password_verify($password, $user['password_hash'])) {
     // ---------------------------
     $_SESSION['user_id'] = (int)$user['id'];
     $_SESSION['username'] = $user['username'];
+    $_SESSION['role'] = $user['role'] ?? 'user';
 
     if ($keep) {
         $token = bin2hex(random_bytes(32));
