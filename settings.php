@@ -34,6 +34,7 @@ $donations = $donationStmt->fetch(PDO::FETCH_ASSOC);
 $donationCount = $donations['donation_count'] ?? 0;
 $totalDonated = $donations['total_donated'] ? floatval($donations['total_donated']) : 0;
 $lastDonation = $donations['last_donation'] ?? null;
+$isAdmin = $user && $user['role'] === 'admin';
 ?>
 
 <!DOCTYPE html>
@@ -344,13 +345,16 @@ $lastDonation = $donations['last_donation'] ?? null;
     <div class="icons">
       <img src="images/exit.png" alt="exit" id="exitIcon">
       <img src="images/profile.png" alt="settings" id="settingsIcon">
+      <?php if (!$isAdmin): ?>
       <img src="images/donations.png" alt="profile" id="profileIcon">
+      <?php endif; ?>
     </div>
   </div>
 
   <!-- ✅ FIXED CENTERED PANEL -->
  <main>
-  <!-- DONATION SUMMARY PANEL (TOP) -->
+  <!-- DONATION SUMMARY PANEL (TOP) - HIDDEN FOR ADMINS -->
+  <?php if (!$isAdmin): ?>
   <div class="donation-summary-panel">
     <h2 class="donation-summary-title">Your Donation Support</h2>
     <div class="donation-summary-content">
@@ -373,6 +377,7 @@ $lastDonation = $donations['last_donation'] ?? null;
       <?php endif; ?>
     </div>
   </div>
+  <?php endif; ?>
 
   <!-- PROFILE PANEL (BOTTOM) -->
   <div class="profile-panel">
@@ -502,9 +507,12 @@ document.getElementById('settingsIcon')?.addEventListener('click', () => {
   window.location.href = '/NihonGo/settings.php';
 });
 
-document.getElementById('profileIcon')?.addEventListener('click', () => {
-  window.location.href = '/NihonGo/donation.php';
-});
+// Profile icon only shown for non-admins
+if (document.getElementById('profileIcon')) {
+  document.getElementById('profileIcon').addEventListener('click', () => {
+    window.location.href = '/NihonGo/donation.php';
+  });
+}
 </script>
 
 

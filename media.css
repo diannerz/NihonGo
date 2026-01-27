@@ -13,6 +13,8 @@
 .manga-page .top-left img { height:60px; }
 .manga-page .header-text-inline .title { color:var(--white); font-weight:800; font-size:1.6rem; margin:0; }
 .manga-page .header-text-inline .subtitle { color:#eaf5f6; font-size:0.9rem; margin:0; }
+.manga-page .top-right { display:flex; gap:12px; }
+.manga-page .top-right a { display:flex; align-items:center; justify-content:center; border:none; outline:none; background:none; padding:0; }
 .manga-page .top-right img { height:52px; }
 
 /* main wrapper */

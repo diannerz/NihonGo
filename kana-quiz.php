@@ -61,6 +61,20 @@ body{margin:0;font-family:'Kosugi Maru',sans-serif;background:#cce7e8;color:#1e2
 .progress-track{background:#d8eae9;border-radius:12px;height:18px;overflow:hidden;margin-top:10px}
 .fill{height:100%;background:linear-gradient(90deg,#60a6a9,#2f6f73);width:0%}
 .label{margin-top:6px;font-weight:bold;text-align:right}
+
+/* Score Popup */
+.popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:1000}
+.popup-overlay.show{display:flex;justify-content:center;align-items:center}
+.popup-card{background:#2f6f73;border-radius:16px;padding:40px;text-align:center;color:#eef7f6;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.popup-card.correct{border:4px solid #6ee06e}
+.popup-card.wrong{border:4px solid #ff6b6b}
+.result-text{font-size:2.2rem;font-weight:bold;margin-bottom:20px}
+.popup-card.correct .result-text{color:#6ee06e}
+.popup-card.wrong .result-text{color:#ff6b6b}
+.score-display{font-size:1.8rem;margin:20px 0;color:#ffd24a}
+.answer-info{font-size:1.1rem;margin:15px 0;color:#d8eae9}
+.popup-btn{background:#ffd24a;border:none;border-radius:10px;padding:12px 28px;font-weight:bold;color:#274043;cursor:pointer;font-size:1.1rem;margin-top:20px}
+.popup-btn:hover{opacity:0.9}
 </style>
 </head>
 
@@ -115,6 +129,17 @@ body{margin:0;font-family:'Kosugi Maru',sans-serif;background:#cce7e8;color:#1e2
 </div>
 </div>
 </div>
+
+<!-- Score Popup -->
+<div id="popupOverlay" class="popup-overlay">
+  <div id="popupCard" class="popup-card">
+    <div id="resultText" class="result-text"></div>
+    <div id="scoreDisplay" class="score-display"></div>
+    <div id="answerInfo" class="answer-info"></div>
+    <button id="popupBtn" class="popup-btn">Next Question</button>
+  </div>
+</div>
+
 
 <script>
 const hiraPages = [
@@ -233,7 +258,9 @@ function answer(btn, q) {
   if (answered) return;
   answered = true;
 
-  if (btn.textContent === q.romaji) {
+  const isCorrect = btn.textContent === q.romaji;
+
+  if (isCorrect) {
     btn.classList.add('correct');
     score++;
 
@@ -255,10 +282,54 @@ function answer(btn, q) {
       if (b.textContent === q.romaji) b.classList.add('correct');
     });
   }
+
+  // Show popup
+  showPopup(isCorrect, q.romaji);
+}
+
+function showPopup(isCorrect, correctAnswer) {
+  const overlay = document.getElementById('popupOverlay');
+  const card = document.getElementById('popupCard');
+  const resultText = document.getElementById('resultText');
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  const answerInfo = document.getElementById('answerInfo');
+
+  card.className = isCorrect ? 'popup-card correct' : 'popup-card wrong';
+  resultText.textContent = isCorrect ? '✓ Correct!' : '✗ Wrong';
+  scoreDisplay.textContent = `Score: ${score}/${quiz.length}`;
+  
+  if (!isCorrect) {
+    answerInfo.textContent = `Correct answer: ${correctAnswer}`;
+  } else {
+    answerInfo.textContent = '';
+  }
+
+  overlay.classList.add('show');
+}
+
+function hidePopup() {
+  const overlay = document.getElementById('popupOverlay');
+  overlay.classList.remove('show');
 }
 
 nextBtn.onclick = () => {
   if (!answered) return alert('Choose an answer or Skip');
+  hidePopup();
+  answered = false;
+  current++;
+  if (current >= quiz.length) {
+    fetch('php/save_progress.php', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'quiz_complete' })
+    }).then(() => location.href='dashboard.php');
+    return;
+  }
+  render();
+};
+
+document.getElementById('popupBtn').onclick = () => {
+  hidePopup();
   answered = false;
   current++;
   if (current >= quiz.length) {

@@ -29,8 +29,7 @@ $total_donors = count(array_unique(array_column($donations, 'user_id')));
       </div>
       <div class="topbar-right">
         <img src="../images/exit.png" id="exitBtn" alt="Exit" title="Logout">
-        <img src="../images/setting.png" id="settingsBtn" alt="Settings" title="Settings">
-        <img src="../images/profile.png" id="profileBtn" alt="Profile" title="Profile">
+        <img src="../images/profile.png" id="settingsBtn" alt="Settings" title="Settings">
       </div>
     </div>
 

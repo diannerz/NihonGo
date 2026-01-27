@@ -220,7 +220,6 @@ $next_kana = $current_index < count($all_kana) - 1 ? $all_kana[$current_index + 
       <div class="topbar-right">
         <img src="../images/exit.png" id="exitBtn" alt="Exit" title="Logout">
         <img src="../images/profile.png" id="settingsBtn" alt="Settings" title="Settings">
-        <img src="../images/donations.png" id="profileBtn" alt="Profile" title="Profile">
       </div>
     </div>
 
@@ -323,11 +322,11 @@ $next_kana = $current_index < count($all_kana) - 1 ? $all_kana[$current_index + 
     };
 
     document.getElementById('settingsBtn').onclick = function() {
-      location.href = 'profile.php';
+      location.href = '../settings.php';
     };
 
     document.getElementById('profileBtn').onclick = function() {
-      location.href = 'donation.php';
+      location.href = '../settings.php';
     };
   </script>
 </body>

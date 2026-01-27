@@ -97,10 +97,10 @@ window.addEventListener("DOMContentLoaded", () => {
         <img src="images/exit.png" alt="logout">
       </a>
       <a href="settings.php" title="Settings">
-        <img src="images/setting.png" alt="settings">
+        <img src="images/profile.png" alt="settings">
       </a>
       <a href="donation.php" title="Profile">
-        <img src="images/profile.png" alt="profile">
+        <img src="images/donations.png" alt="profile">
       </a>
     </div>
   </header>

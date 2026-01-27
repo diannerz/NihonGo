@@ -116,8 +116,7 @@ $katakana = array_filter($all_kana, fn($k) => $k['kana_type'] === 'katakana');
       </div>
       <div class="topbar-right">
         <img src="../images/exit.png" id="exitBtn" alt="Exit" title="Logout">
-        <img src="../images/setting.png" id="settingsBtn" alt="Settings" title="Settings">
-        <img src="../images/profile.png" id="profileBtn" alt="Profile" title="Profile">
+        <img src="../images/profile.png" id="settingsBtn" alt="Settings" title="Settings">
       </div>
     </div>
 
